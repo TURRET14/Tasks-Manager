@@ -1,0 +1,15 @@
+CREATE TABLE users (
+    id BIGSERIAL PRIMARY KEY,
+    login TEXT NOT NULL UNIQUE,
+    email TEXT NOT NULL UNIQUE,
+    password TEXT NOT NULL
+);
+
+CREATE TABLE tasks (
+    id BIGSERIAL PRIMARY KEY,
+    text TEXT,
+    status_id SMALLINT,
+    user_id BIGINT NOT NULL REFERENCES users(id) ON UPDATE CASCADE ON DELETE CASCADE,
+    header TEXT,
+    creation_date TIMESTAMP NOT NULL
+);
