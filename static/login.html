@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="/static/login_style.css">
+</head>
+
+<body>
+    <div id="super_main">
+        <div id="main">
+            <div id="header">
+                <img src="/static/note.png"><span id="name_span">Менеджер Заметок</span>
+            </div>
+            <div id="form_main">
+                <form id="login">
+                    <div class="big_text">Авторизация</div>
+                    <div class="default_flex">Логин:<input class="flex_item" name="login_input" type="text"
+                            maxlength="30" required></div>
+                    <div class="default_flex">Пароль:<input class="flex_item" name="password_input" type="password"
+                            minlength="5" maxlength="30" required></div>
+                    <div class="default_flex"><input class="flex_item" type="submit" value="Войти"></div>
+                </form>
+                <span class="super_big_text">Или</span>
+                <form id="register">
+                    <div class="big_text">Регистрация</div>
+                    <div class="default_flex">Логин:<input class="flex_item" name="login_input" type="text"
+                            maxlength="30" required></div>
+                    <div class="default_flex">Пароль:<input class="flex_item" name="password_input" type="password"
+                            minlength="5" maxlength="30" required></div>
+                    <div class="default_flex">Электронная почта:<input class="flex_item" name="email_input" type="email"
+                            required></div>
+                    <div class="default_flex"><input class="flex_item" type="submit" value="Зарегистрироваться"></div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script src="/static/login_js.js">
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,305 @@
+@font-face {
+    font-family: "Bahnschrift";
+    src: url("/static/bahnschrift.woff") format("woff");
+    font-weight: normal;
+    font-style: normal;
+}
+
+
+body {
+    background: #171717;
+    font-family: "Bahnschrift", sans-serif;
+    font-size: 30px;
+    color: white;
+    margin: 0px;
+    padding: 0px;
+}
+
+img {
+    width: 100px;
+}
+
+#super_main {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    height: 100vh;
+}
+
+#main, #little_main {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    border-radius: 25px;
+    padding: 25px;
+}
+
+#main {
+    max-width: 1920px; 
+    width: 100%;
+    align-items: stretch;
+}
+
+#little_main {
+    background:  #262626;
+    align-items: flex-start;
+}
+
+#header {
+    font-size: 60px;
+    display: flex;
+    flex-direction: row;
+    justify-content: left;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+#filter {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    background: #2e2e2e;
+    padding: 15px;
+    border-radius: 15px;
+}
+
+#filter_data {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+#status_header, #date_header {
+    cursor: pointer;
+}
+
+input, button {
+    font-family: "Bahnschrift", sans-serif;
+    font-size: 40px;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    outline: none;
+    background: #3d3d3d;
+    cursor: pointer; 
+    padding: 5px;
+}
+
+
+input[type="submit"]:hover, button:hover {
+    background: #4a4a4a;
+}
+
+
+input:active, button:active {
+    background: #323232;
+}
+
+#filter input, #filter button, dialog input, dialog button, dialog textarea {
+    font-family: "Bahnschrift", sans-serif;
+    font-size: 30px;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    outline: none;
+    background: #404040;
+    cursor: pointer; 
+    padding: 5px;
+}
+
+
+#filter input[type="submit"]:hover, #filter button:hover, dialog input[type="submit"]:hover, dialog button:hover {
+    background: #4a4a4a;
+}
+
+
+#filter input:active, #filter button:active, dialog input:active, dialog button:active, dialog textarea:active {
+    background: #363636;
+}
+
+
+input[type="submit"], dialog input[type="submit"] {
+    font-size: 50px;
+}
+
+.div_margin {
+    margin-top: 15px;
+}
+
+#exit_button {
+    font-size: 60px;
+    border-radius: 15px;
+    padding: 15px;
+    margin-left: 15px;
+}
+
+#name_span {
+    margin-left: 20px;
+}
+
+
+.filter_object {
+    margin-bottom: 5px;
+}
+
+.status_date_object {
+    margin-right: 10px;
+}
+
+
+select, dialog select {
+    background-color: #404040;
+    color: #ffffff; 
+    border: none;
+    border-radius: 8px;
+    padding: 5px;
+    font-family: "Bahnschrift", sans-serif;
+    font-size: 25px; 
+    cursor: pointer; 
+    outline: none; 
+}
+
+select:hover, dialog select:hover {
+    background-color: #4a4a4a;
+}
+
+select:active, dialog select:active {
+    background-color: #363636;
+}
+
+input[type="checkbox"] {
+    display: none;
+}
+
+.custom-checkbox {
+    display: block;
+    width: 30px;
+    height: 30px;
+    background-color: #363636;
+    border-radius: 5px;
+    position: relative;
+    cursor: pointer;
+}
+
+input[type="checkbox"]:checked + .custom-checkbox {
+    background-color: #505050;
+}
+
+.custom-checkbox::after {
+    content: "";
+    position: absolute;
+    display: none;
+    left: 50%;
+    top: 40%;
+    width: 10px;
+    height: 15px;
+    border: solid white;
+    border-width: 0 5px 5px 0;
+    transform: translate(-50%, -50%) rotate(45deg);
+}
+
+input[type="checkbox"]:checked + .custom-checkbox::after {
+    display: block;
+}
+
+#checkbox_label {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    margin-left: 5px;
+}
+
+
+.table-container {
+    background-color: #262626;
+    padding: 20px;
+    border-radius: 10px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #2e2e2e;
+    border-radius: 10px;
+    overflow: hidden;
+    color: #ffffff; 
+}
+
+
+th {
+    background-color: #363636;
+    padding: 12px 15px; 
+    text-align: left; 
+    border-bottom: 2px solid #555555; 
+}
+
+
+td {
+    padding: 12px 15px; 
+    border-bottom: 1px solid #555555; 
+}
+
+
+tbody tr:nth-child(odd) {
+    background-color: #2e2e2e; 
+}
+
+tbody tr:nth-child(even) {
+    background-color: #363636; 
+}
+
+
+table th:first-child,
+table td:first-child {
+    border-left: none;
+}
+
+table th:last-child,
+table td:last-child {
+    border-right: none;
+}
+
+
+tbody tr:last-child td {
+    border-bottom: none;
+}
+
+
+thead tr {
+    border-top: none; 
+}
+
+dialog {
+    font-family: "Bahnschrift", sans-serif;
+    font-size: 35px;
+    color: white;
+    background: #2e2e2e;
+    border: 3px solid #454545;
+    outline: none;
+    border-radius: 15px;
+}
+
+dialog::backdrop {
+    background: black;
+    opacity: 0.7;
+}
+
+dialog textarea {
+    resize: none;
+    font-size: 30px;
+}
+dialog button, dialog input, dialog select, dialog input[type="submit"] {
+    font-size: 35px;
+}
+
+p {
+    margin: 10px;
+}
+
+.name_text {
+    font-size: 45px;
+}

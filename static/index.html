@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="/static/index_style.css">
+</head>
+
+<body>
+    <dialog id="dialog_add_task">
+        <form id="add_task_form">
+            <p class="name_text">Добавление заметки</p>
+            <p>Заголовок: <input id="task_header" name="header" type="text"></p>
+            <p>Текст: <textarea id="text" name="text" type="text" rows="5" cols="40"></textarea></p>
+            <p>Статус: 
+                <select id="status_id" name="status_id">
+                    <option value="0">Новая</option>
+                    <option value="1">В работе</option>
+                    <option value="2">Завершена</option>
+                </select>
+            </p>
+            <p><input id="dialog_add_task_button" type="submit" value="Добавить"></p>
+        </form>
+    </dialog>
+
+    <dialog id="dialog_change_task">
+        <form id="change_task_form">
+            <p class="name_text">Изменение заметки</p>
+            <p>ID: <span id="change_id"></span></p>
+            <p>Заголовок: <input id="change_header" name="change_header" type="text"></p>
+            <p>Текст: <textarea id="change_text" name="change_text" type="text" rows="5" cols="40"></textarea></p>
+            <p>Статус: 
+                <select id="change_status_id" name="change_status_id">
+                    <option value="0">Новая</option>
+                    <option value="1">В работе</option>
+                    <option value="2">Завершена</option>
+                </select>
+            </p>
+            <p>Дата создания: <span id="change_creation_date"></span></p>
+            <p><input id="change_dialog_add_task_button" type="submit" value="Изменить">
+                <button id="delete_task" type="button">Удалить</button>
+            </p>
+        </form>
+    </dialog>
+
+
+
+    <div id="super_main">
+        <div id="main">
+            <div id="header">
+                <img src="/static/note.png">
+                <span id="name_span">Менеджер Заметок</span>
+                <button id="exit_button" type="button">Выйти</button>
+            </div>
+            <div id="little_main">
+                <button id="add_task">Добавить задачу</button>
+                <div id="filter" class="div_margin">
+                    <span class="filter_object">Фильтрация</span>
+                    <div id="filter_data" class="filter_object">
+                        <span class="status_date_object">Статус:</span>
+                        <select id="filter_status" class="status_date_object">
+                            <option value="3">Все</option>
+                            <option value="0">Новая</option>
+                            <option value="1">В работе</option>
+                            <option value="2">Завершена</option>
+                        </select>
+                        <label id="checkbox_label" class="status_date_object"><input id="is_date_enabled"
+                                type="checkbox"><span class="custom-checkbox"></span></label>
+                        <span class="status_date_object">Дата:</span><input id="filter_date" type="date" disabled>
+                    </div>
+                    <button id="filter_button" type="button">Фильтровать</button>
+                </div>
+
+            <table class="div_margin">
+                <thead>
+                    <tr>
+                        <td>ID</td>
+                        <td>Заголовок</td>
+                        <td>Текст</td>
+                        <td id="status_header">Статус</td>
+                        <td id="date_header">Дата создания</td>
+                    </tr>
+                </thead>
+                <tbody id="tasks_table">
+
+                </tbody>
+            </table>
+            </div>
+        </div>
+    </div>
+
+
+    <script src="/static/index_js.js">
+    </script>
+</body>
+
+</html>

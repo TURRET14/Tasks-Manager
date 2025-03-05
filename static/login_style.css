@@ -1,0 +1,140 @@
+@font-face {
+    font-family: "Bahnschrift";
+    src: url("/static/bahnschrift.woff") format("woff");
+    font-weight: normal;
+    font-style: normal;
+}
+
+body {
+    background: #171717;
+    font-family: "Bahnschrift", sans-serif;
+    font-size: 30px;
+    color: white;
+    margin: 0px;
+    padding: 0px;
+}
+
+div {
+    margin: 15px;
+}
+
+img {
+    width: 100px;
+}
+
+#super_main {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0px;
+}
+#main {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: start;
+    height: 100vh;
+    margin: 0px;
+}
+
+#header {
+    font-size: 60px;
+    display: flex;
+    flex-direction: row;
+    justify-content: left;
+    align-items: center;
+    margin-left: 25px;
+}
+
+
+#name_span {
+    margin-left: 20px;
+}
+
+#form_main {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    margin: 0px;
+}
+
+form {
+    background: #262626;
+    border-radius: 25px;
+    margin: 25px;
+    padding: 10px;
+}
+
+input {
+    background: #2e2e2e;
+    
+}
+
+input:hover {
+    border: none;
+}
+
+input:active {
+    border: none;
+}
+
+input {
+    font-family: "Bahnschrift", sans-serif;
+    font-size: 30px;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    outline: none;
+    background: #2e2e2e;
+    cursor: pointer; 
+    padding: 5px;
+}
+
+
+input:hover {
+    background: #363636;
+}
+
+
+input:active {
+    background: #3d3d3d;
+}
+
+input[type="submit"] {
+    font-size: 40px;
+}
+
+.big_text {
+    font-size: 45px;
+}
+
+#login {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: stretch;
+}
+
+#register {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: stretch;
+}
+
+.default_flex {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+.flex_item {
+    flex-grow: 1;
+    margin-left: 5px;
+}
+
+.super_big_text {
+    font-size: 50px;
+}
