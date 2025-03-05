@@ -48,9 +48,9 @@ async function filter(event) {
 document.getElementById("filter_button").addEventListener("click", filter);
 
 async function signOut(event) {
-    localStorage.removeItem("auth_token");
     var exitConfirmation = confirm("Вы точно хотите выйти?");
     if (exitConfirmation == true) {
+        localStorage.removeItem("auth_token");
         window.location.href = "/login";
     }
 }
