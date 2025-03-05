@@ -303,3 +303,11 @@ p {
 .name_text {
     font-size: 45px;
 }
+
+#close_button_add {
+    float: right;
+}
+
+#close_button_change {
+    float: right;
+}

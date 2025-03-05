@@ -6,6 +6,11 @@ var allTasks = new Array();
 document.getElementById("dialog_add_task").addEventListener("close", (event) => document.getElementById("add_task_form").reset());
 document.getElementById("dialog_change_task").addEventListener("close", (event) => document.getElementById("change_task_form").reset());
 
+
+document.getElementById("close_button_add").addEventListener("click", (event) => document.getElementById("dialog_add_task").close());
+document.getElementById("close_button_change").addEventListener("click", (event) => document.getElementById("dialog_change_task").close());
+
+
 async function dateChecked(event) {
     if (event.currentTarget.checked == true) {
         document.getElementById("filter_date").removeAttribute("disabled");
