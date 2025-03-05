@@ -260,10 +260,10 @@ document.getElementById("change_task_form").addEventListener("submit", async fun
             alert("Ошибка записи данных. Перезагрузите страницу.");
         }
         else if (response.status == 403) {
-            alert("Доступ к чужим заметкам запрещен.");
+            alert("Доступ к чужим задачам запрещен.");
         }
         else if (response.status == 404) {
-            alert("Заметка не найдена!");
+            alert("Задача не найдена!");
         }
         else {
             alert("Внутренняя ошибка сервера. Перезагрузите страницу.");
@@ -276,7 +276,7 @@ document.getElementById("change_task_form").addEventListener("submit", async fun
 
 document.getElementById("delete_task").addEventListener("click", async function (event) {
     event.preventDefault();
-    var confirmation = confirm("Вы уверены, что хотите удалить заметку?");
+    var confirmation = confirm("Вы уверены, что хотите удалить задачу?");
     if (confirmation) {
         event.preventDefault();
         document.getElementById("dialog_change_task").close();
@@ -299,10 +299,10 @@ document.getElementById("delete_task").addEventListener("click", async function 
                 alert("Ошибка удаления данных. Перезагрузите страницу.");
             }
             else if (response.status == 403) {
-                alert("Доступ к чужим заметкам запрещен.");
+                alert("Доступ к чужим задачам запрещен.");
             }
             else if (response.status == 404) {
-                alert("Заметка не найдена!");
+                alert("Задача не найдена!");
             }
             else {
                 alert("Внутренняя ошибка сервера. Перезагрузите страницу.");
