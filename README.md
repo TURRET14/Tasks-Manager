@@ -233,3 +233,5 @@ python-multipart
 Также приложен файл Dockerfile, который создает образ Docker для данного проекта. И docker-compose.yml, который отвечает за сетевое взаимодействие и создание двух контейнеров - данного веб-сервиса и PostgreSQL с совместимой базой данных. После создания и запуска контейнеров к сайту можно получить доступ по адресу localhost:8000
 
 Файл с требуемыми зависимостями Python requirements.txt также приложен.
+
+Ссылка на уже созданный образ проекта на Docker Hub: https://hub.docker.com/repository/docker/turret14/task_manager/general
