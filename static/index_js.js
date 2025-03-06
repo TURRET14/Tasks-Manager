@@ -1,3 +1,5 @@
+var backendService = "http://localhost:8000";
+
 var statusSortAsc = true;
 var dateSortAsc = true;
 var tasks = new Array();
@@ -174,7 +176,7 @@ async function getData() {
     dateSortAsc = true;
     var auth_token = localStorage.getItem("auth_token");
     if (auth_token != null) {
-        var tasksRequest = await fetch("/tasks", { method: "GET", headers: { "Authorization": "Bearer " + auth_token } });
+        var tasksRequest = await fetch(backendService + "/tasks", { method: "GET", headers: { "Authorization": "Bearer " + auth_token } });
         if (tasksRequest.ok == true) {
             var jsonResponse = await tasksRequest.json();
             allTasks = jsonResponse;
@@ -217,7 +219,7 @@ document.getElementById("add_task_form").addEventListener("submit", async functi
         window.location.href = "/login";
         return;
     }
-    var postResponse = await fetch("/tasks", { method: "POST", body: formDataJson, headers: { "Authorization": "Bearer " + auth_token, "Content-Type": "application/json" } });
+    var postResponse = await fetch(backendService + "/tasks", { method: "POST", body: formDataJson, headers: { "Authorization": "Bearer " + auth_token, "Content-Type": "application/json" } });
     if (postResponse.ok == false) {
         if (postResponse.status == 401) {
             alert("Сессия авторизации истекла. Пожалуйста, авторизуйтесь.");
@@ -250,7 +252,7 @@ document.getElementById("change_task_form").addEventListener("submit", async fun
         return;
     }
     var taskDataJson = JSON.stringify(taskData);
-    var response = await fetch("/tasks", { method: "PUT", body: taskDataJson, headers: { "Authorization": "Bearer " + auth_token, "Content-Type": "application/json" } });
+    var response = await fetch(backendService + "/tasks", { method: "PUT", body: taskDataJson, headers: { "Authorization": "Bearer " + auth_token, "Content-Type": "application/json" } });
     if (response.ok == false) {
         if (response.status == 401) {
             alert("Сессия авторизации истекла. Пожалуйста, авторизуйтесь.");
@@ -289,7 +291,7 @@ document.getElementById("delete_task").addEventListener("click", async function 
             return;
         }
         var taskDataJson = JSON.stringify(taskData);
-        var response = await fetch("/tasks", { method: "DELETE", body: taskDataJson, headers: { "Authorization": "Bearer " + auth_token, "Content-Type": "application/json" } });
+        var response = await fetch(backendService + "/tasks", { method: "DELETE", body: taskDataJson, headers: { "Authorization": "Bearer " + auth_token, "Content-Type": "application/json" } });
         if (response.ok == false) {
             if (response.status == 401) {
                 alert("Сессия авторизации истекла. Пожалуйста, авторизуйтесь.");
