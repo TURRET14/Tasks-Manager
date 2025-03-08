@@ -5,11 +5,16 @@
     font-style: normal;
 }
 
-
+html {
+    font-size: 150%;
+    overflow: scroll;
+    margin: 0px;
+    padding: 0px;
+}
 body {
     background: #171717;
     font-family: "Bahnschrift", sans-serif;
-    font-size: 30px;
+    font-size: 1rem;
     color: white;
     margin: 0px;
     padding: 0px;
@@ -21,38 +26,33 @@ img {
 
 #super_main {
     display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    align-items: center;
-    height: 100vh;
 }
 
 #main, #little_main {
     display: flex;
     flex-direction: column;
     justify-content: center;
+    align-items: start;
     border-radius: 25px;
-    padding: 25px;
 }
 
 #main {
-    max-width: 1920px; 
-    width: 100%;
-    align-items: stretch;
+    margin: auto;
 }
 
 #little_main {
     background:  #262626;
-    align-items: flex-start;
+    padding: 15px;
 }
 
 #header {
-    font-size: 60px;
+    font-size: 1.5rem;
     display: flex;
     flex-direction: row;
     justify-content: left;
     align-items: center;
-    margin-bottom: 15px;
+    margin-bottom: 25px;
+    margin-top: 25px;
 }
 
 #filter {
@@ -72,20 +72,25 @@ img {
     align-items: center;
 }
 
+#filter_button {
+    margin-top: 5px;
+}
+
 #status_header, #date_header {
     cursor: pointer;
 }
 
 input, button {
     font-family: "Bahnschrift", sans-serif;
-    font-size: 40px;
+    font-size: 1.15rem;
     color: white;
     border: none;
     border-radius: 5px;
     outline: none;
     background: #3d3d3d;
-    cursor: pointer; 
+    cursor: pointer;
     padding: 5px;
+    max-width: 300px;
 }
 
 
@@ -100,13 +105,13 @@ input:active, button:active {
 
 #filter input, #filter button, dialog input, dialog button, dialog textarea {
     font-family: "Bahnschrift", sans-serif;
-    font-size: 30px;
+    font-size: 1.25rem;
     color: white;
     border: none;
     border-radius: 5px;
     outline: none;
     background: #404040;
-    cursor: pointer; 
+    cursor: pointer;
     padding: 5px;
 }
 
@@ -122,7 +127,7 @@ input:active, button:active {
 
 
 input[type="submit"], dialog input[type="submit"] {
-    font-size: 50px;
+    font-size: 1.25rem;
 }
 
 .div_margin {
@@ -130,7 +135,7 @@ input[type="submit"], dialog input[type="submit"] {
 }
 
 #exit_button {
-    font-size: 60px;
+    font-size: 1.5rem;
     border-radius: 15px;
     padding: 15px;
     margin-left: 15px;
@@ -152,14 +157,14 @@ input[type="submit"], dialog input[type="submit"] {
 
 select, dialog select {
     background-color: #404040;
-    color: #ffffff; 
+    color: #ffffff;
     border: none;
     border-radius: 8px;
     padding: 5px;
     font-family: "Bahnschrift", sans-serif;
-    font-size: 25px; 
-    cursor: pointer; 
-    outline: none; 
+    font-size: 1.25rem;
+    cursor: pointer;
+    outline: none;
 }
 
 select:hover, dialog select:hover {
@@ -221,35 +226,37 @@ input[type="checkbox"]:checked + .custom-checkbox::after {
 }
 
 table {
-    width: 100%;
+    min-width: 200px;
+    max-width: 2000px;
+    font-size: 0.8rem;
     border-collapse: collapse;
     background-color: #2e2e2e;
     border-radius: 10px;
     overflow: hidden;
-    color: #ffffff; 
+    color: #ffffff;
 }
 
 
 th {
     background-color: #363636;
-    padding: 12px 15px; 
-    text-align: left; 
-    border-bottom: 2px solid #555555; 
+    padding: 15px 15px;
+    text-align: left;
+    border-bottom: 2px solid #555555;
 }
 
 
 td {
-    padding: 12px 15px; 
-    border-bottom: 1px solid #555555; 
+    padding: 15px 15px;
+    border-bottom: 1px solid #555555;
 }
 
 
 tbody tr:nth-child(odd) {
-    background-color: #2e2e2e; 
+    background-color: #2e2e2e;
 }
 
 tbody tr:nth-child(even) {
-    background-color: #363636; 
+    background-color: #363636;
 }
 
 
@@ -270,17 +277,18 @@ tbody tr:last-child td {
 
 
 thead tr {
-    border-top: none; 
+    border-top: none;
 }
 
 dialog {
     font-family: "Bahnschrift", sans-serif;
-    font-size: 35px;
+    font-size: 1rem;
     color: white;
     background: #2e2e2e;
     border: 3px solid #454545;
     outline: none;
     border-radius: 15px;
+    padding: 10px;
 }
 
 dialog::backdrop {
@@ -290,18 +298,16 @@ dialog::backdrop {
 
 dialog textarea {
     resize: none;
-    font-size: 30px;
+    font-size: 1rem;
 }
-dialog button, dialog input, dialog select, dialog input[type="submit"] {
-    font-size: 35px;
-}
+
 
 p {
     margin: 10px;
 }
 
 .name_text {
-    font-size: 45px;
+    font-size: 1.3rem;
 }
 
 #close_button_add {
