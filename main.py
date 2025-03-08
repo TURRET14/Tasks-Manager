@@ -34,7 +34,7 @@ class EmailValidator(pydantic.BaseModel):
 def validation_exception_handler(request: fastapi.Request, exc: fastapi.exceptions.RequestValidationError):
     return fastapi.responses.JSONResponse({"error": "VALIDATION_ERROR"}, status_code = starlette.status.HTTP_400_BAD_REQUEST)
 
-
+# Отвечает за логин пользователей в систему.
 @app.post("/login")
 def post_login(login_input = fastapi.Form(min_length=1, max_length=30), password_input = fastapi.Form(min_length=6, max_length=30), db = fastapi.Depends(get_db)):
     user = db.query(Users).filter(Users.login == login_input).first()
@@ -51,7 +51,7 @@ def post_login(login_input = fastapi.Form(min_length=1, max_length=30), password
     except:
         return fastapi.responses.JSONResponse({"error": "INCORRECT_PASSWORD_ERROR"}, status_code=starlette.status.HTTP_401_UNAUTHORIZED)
 
-
+# Отвечает за регистрацию пользователей.
 @app.post("/register")
 def register(login_input = fastapi.Form(min_length=1, max_length=30), password_input = fastapi.Form(min_length=6, max_length=30), email_input = fastapi.Form(min_length=1, max_length=100), db = fastapi.Depends(get_db)):
     if db.query(Users).filter(Users.login == login_input).first() is not None:
@@ -72,7 +72,7 @@ def register(login_input = fastapi.Form(min_length=1, max_length=30), password_i
         token = encode_jwt(payload)
         return fastapi.responses.JSONResponse({"message": "AUTHORIZATION_SUCCESS"}, headers={"Authorization": "Bearer " + token})
 
-
+# Отвечает за получение задач.
 @app.get("/tasks")
 def get_tasks(token = fastapi.Depends(get_auth_bearer), db = fastapi.Depends(get_db)):
     try:
@@ -82,7 +82,7 @@ def get_tasks(token = fastapi.Depends(get_auth_bearer), db = fastapi.Depends(get
     task_list = db.query(Tasks).filter(Tasks.user_id == payload["user_id"]).all()
     return fastapi.responses.JSONResponse(fastapi.encoders.jsonable_encoder(task_list))
 
-
+# Отвечает за добавление новой задачи.
 @app.post("/tasks")
 def post_tasks(data = fastapi.Body(), token = fastapi.Depends(get_auth_bearer), db = fastapi.Depends(get_db)):
     if len(data["header"]) > 200 or len(data["text"]) > 3000:
@@ -102,6 +102,7 @@ def post_tasks(data = fastapi.Body(), token = fastapi.Depends(get_auth_bearer), 
         return fastapi.responses.JSONResponse({"error": "BAD_REQUEST_ERROR"}, status_code = starlette.status.HTTP_400_BAD_REQUEST)
 
 
+# Отвечает за изменение существующей задачи.
 @app.put("/tasks")
 def put_tasks(data = fastapi.Body(), token = fastapi.Depends(get_auth_bearer), db = fastapi.Depends(get_db)):
     if len(data["header"]) > 200 or len(data["text"]) > 3000:
@@ -131,6 +132,7 @@ def put_tasks(data = fastapi.Body(), token = fastapi.Depends(get_auth_bearer), d
         return fastapi.responses.JSONResponse({"error": "BAD_REQUEST_ERROR"}, status_code = starlette.status.HTTP_400_BAD_REQUEST)
 
 
+# Отвечает за удаление существующей задачи.
 @app.delete("/tasks")
 def delete_tasks(data = fastapi.Body(), token = fastapi.Depends(get_auth_bearer), db = fastapi.Depends(get_db)):
     try:
