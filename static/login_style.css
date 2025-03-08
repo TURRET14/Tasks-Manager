@@ -5,16 +5,25 @@
     font-style: normal;
 }
 
+
+
+html {
+    font-size: 150%;
+    overflow: scroll;
+    margin:  0px;
+    padding: 0px;
+}
+
 body {
+    font-size: 1rem;
     background: #171717;
     font-family: "Bahnschrift", sans-serif;
-    font-size: 30px;
     color: white;
     margin: 0px;
     padding: 0px;
 }
 
-div {
+form div {
     margin: 15px;
 }
 
@@ -23,40 +32,38 @@ img {
 }
 
 #super_main {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin: 0px;
+    display: flex; 
 }
+
 #main {
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: start;
-    height: 100vh;
-    margin: 0px;
+    margin: auto;
 }
 
 #header {
-    font-size: 60px;
+    font-size: 1.5rem;
+    margin-top: 25px;
+    margin-left: 25px;
     display: flex;
     flex-direction: row;
     justify-content: left;
     align-items: center;
-    margin-left: 25px;
 }
 
-
 #name_span {
-    margin-left: 20px;
+    margin-left: 15px;
 }
 
 #form_main {
     display: flex;
     flex-direction: row;
+    flex-wrap: wrap;
+    align-content: center;
     justify-content: center;
     align-items: center;
-    margin: 0px;
 }
 
 form {
@@ -73,15 +80,17 @@ input {
 
 input:hover {
     border: none;
+    background: #363636;
 }
 
 input:active {
     border: none;
+    background: #3d3d3d;
 }
 
 input {
     font-family: "Bahnschrift", sans-serif;
-    font-size: 30px;
+    font-size: 1rem;
     color: white;
     border: none;
     border-radius: 5px;
@@ -92,21 +101,12 @@ input {
 }
 
 
-input:hover {
-    background: #363636;
-}
-
-
-input:active {
-    background: #3d3d3d;
-}
-
 input[type="submit"] {
-    font-size: 40px;
+    font-size: 1.15rem;
 }
 
 .big_text {
-    font-size: 45px;
+    font-size: 1.2rem;
 }
 
 #login {
@@ -126,8 +126,10 @@ input[type="submit"] {
 .default_flex {
     display: flex;
     flex-direction: row;
-    justify-content: center;
+    flex-wrap: wrap;
+    justify-content: flex-start;
     align-items: center;
+    align-content: start;
 }
 
 .flex_item {
@@ -136,5 +138,5 @@ input[type="submit"] {
 }
 
 .super_big_text {
-    font-size: 50px;
+    font-size: 1.25rem;
 }
