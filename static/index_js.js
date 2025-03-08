@@ -226,7 +226,7 @@ document.getElementById("add_task_form").addEventListener("submit", async functi
             window.location.href = "/login";
         }
         else if (postResponse.status == 400) {
-            alert("Ошибка записи данных. Перезагрузите страницу.");
+            alert("Ошибка записи данных.");
         }
         else {
             alert("Внутренняя ошибка сервера. Перезагрузите страницу.");
@@ -259,7 +259,7 @@ document.getElementById("change_task_form").addEventListener("submit", async fun
             window.location.href = "/login";
         }
         else if (response.status == 400) {
-            alert("Ошибка записи данных. Перезагрузите страницу.");
+            alert("Ошибка записи данных.");
         }
         else if (response.status == 403) {
             alert("Доступ к чужим задачам запрещен.");
@@ -298,7 +298,7 @@ document.getElementById("delete_task").addEventListener("click", async function 
                 window.location.href = "/login";
             }
             else if (response.status == 400) {
-                alert("Ошибка удаления данных. Перезагрузите страницу.");
+                alert("Ошибка удаления данных.");
             }
             else if (response.status == 403) {
                 alert("Доступ к чужим задачам запрещен.");

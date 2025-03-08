@@ -226,14 +226,14 @@ input[type="checkbox"]:checked + .custom-checkbox::after {
 }
 
 table {
-    min-width: 200px;
     max-width: 2000px;
     font-size: 0.8rem;
     border-collapse: collapse;
     background-color: #2e2e2e;
     border-radius: 10px;
     overflow: hidden;
-    color: #ffffff; 
+    color: #ffffff;
+    align-self: stretch;
 }
 
 

@@ -1,15 +1,15 @@
 CREATE TABLE users (
     id BIGSERIAL PRIMARY KEY,
-    login TEXT NOT NULL UNIQUE,
-    email TEXT NOT NULL UNIQUE,
-    password TEXT NOT NULL
+    login VARCHAR(30) NOT NULL UNIQUE,
+    email VARCHAR(100) NOT NULL UNIQUE,
+    password VARCHAR (64) NOT NULL
 );
 
 CREATE TABLE tasks (
     id BIGSERIAL PRIMARY KEY,
-    text TEXT,
+    text VARCHAR(3000),
     status_id SMALLINT,
     user_id BIGINT NOT NULL REFERENCES users(id) ON UPDATE CASCADE ON DELETE CASCADE,
-    header TEXT,
+    header VARCHAR(200),
     creation_date TIMESTAMP NOT NULL
 );

@@ -13,6 +13,7 @@ import fastapi.staticfiles
 import fastapi.middleware.cors
 import starlette.status
 import bcrypt
+import pydantic
 
 app = fastapi.FastAPI()
 
@@ -26,6 +27,9 @@ app.add_middleware(
 )
 
 
+class EmailValidator(pydantic.BaseModel):
+    email: pydantic.EmailStr
+
 @app.exception_handler(fastapi.exceptions.RequestValidationError)
 def validation_exception_handler(request: fastapi.Request, exc: fastapi.exceptions.RequestValidationError):
     return fastapi.responses.JSONResponse({"error": "VALIDATION_ERROR"}, status_code = starlette.status.HTTP_400_BAD_REQUEST)
@@ -37,20 +41,27 @@ def post_login(login_input = fastapi.Form(min_length=1, max_length=30), password
     if user is None:
         return fastapi.responses.JSONResponse({"error": "INCORRECT_LOGIN_ERROR"}, status_code=starlette.status.HTTP_401_UNAUTHORIZED)
     password = user.password
-    if bcrypt.checkpw(password_input.encode(), password.encode()):
-        payload = {"user_id": user.id}
-        token = encode_jwt(payload)
-        return fastapi.responses.JSONResponse({"message": "AUTHORIZATION_SUCCESS"}, headers={"Authorization": "Bearer " + token})
-    else:
-        return fastapi.responses.JSONResponse({"error": "INCORRECT_PASSWORD_ERROR"}, status_code = starlette.status.HTTP_401_UNAUTHORIZED)
+    try:
+        if bcrypt.checkpw(password_input.encode(), password.encode()):
+            payload = {"user_id": user.id}
+            token = encode_jwt(payload)
+            return fastapi.responses.JSONResponse({"message": "AUTHORIZATION_SUCCESS"}, headers={"Authorization": "Bearer " + token})
+        else:
+            return fastapi.responses.JSONResponse({"error": "INCORRECT_PASSWORD_ERROR"}, status_code=starlette.status.HTTP_401_UNAUTHORIZED)
+    except:
+        return fastapi.responses.JSONResponse({"error": "INCORRECT_PASSWORD_ERROR"}, status_code=starlette.status.HTTP_401_UNAUTHORIZED)
 
 
 @app.post("/register")
-def register(login_input = fastapi.Form(min_length=1, max_length=30), password_input = fastapi.Form(min_length=6, max_length=30), email_input = fastapi.Form(min_length=1), db = fastapi.Depends(get_db)):
+def register(login_input = fastapi.Form(min_length=1, max_length=30), password_input = fastapi.Form(min_length=6, max_length=30), email_input = fastapi.Form(min_length=1, max_length=100), db = fastapi.Depends(get_db)):
     if db.query(Users).filter(Users.login == login_input).first() is not None:
         return fastapi.responses.JSONResponse({"error": "LOGIN_ALREADY_TAKEN_ERROR"}, status_code = starlette.status.HTTP_409_CONFLICT)
     if db.query(Users).filter(Users.email == email_input).first() is not None:
         return fastapi.responses.JSONResponse({"error": "EMAIL_ALREADY_TAKEN_ERROR"}, status_code = starlette.status.HTTP_409_CONFLICT)
+    try:
+        EmailValidator(email=email_input)
+    except:
+        return fastapi.responses.JSONResponse({"error": "VALIDATION_ERROR"}, status_code=starlette.status.HTTP_400_BAD_REQUEST)
     else:
         password = bcrypt.hashpw(password_input.encode(), bcrypt.gensalt())
         user = Users(login=login_input, password=password.decode(), email=email_input)
@@ -74,11 +85,15 @@ def get_tasks(token = fastapi.Depends(get_auth_bearer), db = fastapi.Depends(get
 
 @app.post("/tasks")
 def post_tasks(data = fastapi.Body(), token = fastapi.Depends(get_auth_bearer), db = fastapi.Depends(get_db)):
+    if len(data["header"]) > 200 or len(data["text"]) > 3000:
+        return fastapi.responses.JSONResponse({"error": "VALIDATION_ERROR"}, status_code=starlette.status.HTTP_400_BAD_REQUEST)
     try:
         payload = decode_jwt(token)
     except:
         return fastapi.responses.JSONResponse({"error": "UNAUTHORIZED_ERROR"}, status_code=starlette.status.HTTP_401_UNAUTHORIZED)
     try:
+        if str(data["status_id"]) != "0" and str(data["status_id"]) != "1" and str(data["status_id"]) != "2":
+            return fastapi.responses.JSONResponse({"error": "BAD_REQUEST_ERROR"}, status_code=starlette.status.HTTP_400_BAD_REQUEST)
         task = Tasks(header=data["header"], text=data["text"], status_id=data["status_id"], user_id=payload["user_id"], creation_date=datetime.datetime.now(datetime.UTC))
         db.add(task)
         db.commit()
@@ -89,12 +104,14 @@ def post_tasks(data = fastapi.Body(), token = fastapi.Depends(get_auth_bearer), 
 
 @app.put("/tasks")
 def put_tasks(data = fastapi.Body(), token = fastapi.Depends(get_auth_bearer), db = fastapi.Depends(get_db)):
+    if len(data["header"]) > 200 or len(data["text"]) > 3000:
+        return fastapi.responses.JSONResponse({"error": "VALIDATION_ERROR"}, status_code=starlette.status.HTTP_400_BAD_REQUEST)
     try:
         payload = decode_jwt(token)
     except:
         return fastapi.responses.JSONResponse({"error": "UNAUTHORIZED_ERROR"}, status_code=starlette.status.HTTP_401_UNAUTHORIZED)
     try:
-        if data["status_id"] != "0" and data["status_id"] != "1" and data["status_id"] != "2":
+        if str(data["status_id"]) != "0" and str(data["status_id"]) != "1" and str(data["status_id"]) != "2":
             return fastapi.responses.JSONResponse({"error": "BAD_REQUEST_ERROR"}, status_code=starlette.status.HTTP_400_BAD_REQUEST)
 
         task = db.query(Tasks).filter(Tasks.id == data["id"]).first()

@@ -6,3 +6,5 @@ pyjwt
 bcrypt
 psycopg2-binary
 python-multipart
+pydantic
+email_validator

@@ -8,19 +8,19 @@ class Base(sqlalchemy.orm.DeclarativeBase) : pass
 
 class Users(Base):
     __tablename__ = "users"
-    id = sqlalchemy.Column(sqlalchemy.Integer, primary_key=True)
-    login = sqlalchemy.Column(sqlalchemy.String)
-    email = sqlalchemy.Column(sqlalchemy.String)
-    password = sqlalchemy.Column(sqlalchemy.String)
+    id = sqlalchemy.Column(sqlalchemy.BIGINT, primary_key=True)
+    login = sqlalchemy.Column(sqlalchemy.VARCHAR(30))
+    email = sqlalchemy.Column(sqlalchemy.VARCHAR(100))
+    password = sqlalchemy.Column(sqlalchemy.VARCHAR(64))
 
 class Tasks(Base):
     __tablename__ = "tasks"
-    id = sqlalchemy.Column(sqlalchemy.Integer, primary_key=True)
-    header = sqlalchemy.Column(sqlalchemy.String)
-    text = sqlalchemy.Column(sqlalchemy.String)
-    status_id = sqlalchemy.Column(sqlalchemy.Integer)
-    user_id = sqlalchemy.Column(sqlalchemy.Integer)
-    creation_date = sqlalchemy.Column(sqlalchemy.Date)
+    id = sqlalchemy.Column(sqlalchemy.BIGINT, primary_key=True)
+    header = sqlalchemy.Column(sqlalchemy.VARCHAR(200))
+    text = sqlalchemy.Column(sqlalchemy.VARCHAR(3000))
+    status_id = sqlalchemy.Column(sqlalchemy.INTEGER)
+    user_id = sqlalchemy.Column(sqlalchemy.BIGINT, sqlalchemy.ForeignKey("users.id"))
+    creation_date = sqlalchemy.Column(sqlalchemy.DATETIME)
 
 SQLALCHEMY_DATABASE_URL = os.getenv("SQLALCHEMY_DATABASE_URL")
 
