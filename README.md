@@ -231,7 +231,9 @@ python-dotenv,
 pyjwt, 
 bcrypt, 
 psycopg2-binary, 
-python-multipart
+python-multipart,
+pydantic,
+email-validator
 
 Используемая версия языка - Python 3.13
 Скрипт SQL для создания таблиц, с которыми работает сервис приложен в файле init.sql. Именно он используется при создании контейнера Docker PostgreSQL.
@@ -246,3 +248,10 @@ python-multipart
 Ссылка на образ сервиса Фронтенда в Docker Hub: https://hub.docker.com/repository/docker/turret14/task_manager_frontend/general
 
 Ссылка на образ сервиса Бэкэнда в Docker Hub: https://hub.docker.com/repository/docker/turret14/task_manager_backend/general
+
+
+Unit-тесты находятся в файле unit_testing.py. При выполнении все тесты завершились успешно.
+
+Сами тесты при выполнении работают с локальной базой данных SQLite. После выполнения каждого теста база данных очищается.
+
+Зависимость get_db, используемая в Эндпоинтах, переопределяется и возвращает новую сессию этой же локальной базы данных SQLite.
