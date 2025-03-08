@@ -88,7 +88,7 @@ input, button {
     border-radius: 5px;
     outline: none;
     background: #3d3d3d;
-    cursor: pointer;
+    cursor: pointer; 
     padding: 5px;
     max-width: 300px;
 }
@@ -111,7 +111,7 @@ input:active, button:active {
     border-radius: 5px;
     outline: none;
     background: #404040;
-    cursor: pointer;
+    cursor: pointer; 
     padding: 5px;
 }
 
@@ -157,14 +157,14 @@ input[type="submit"], dialog input[type="submit"] {
 
 select, dialog select {
     background-color: #404040;
-    color: #ffffff;
+    color: #ffffff; 
     border: none;
     border-radius: 8px;
     padding: 5px;
     font-family: "Bahnschrift", sans-serif;
-    font-size: 1.25rem;
-    cursor: pointer;
-    outline: none;
+    font-size: 1.25rem; 
+    cursor: pointer; 
+    outline: none; 
 }
 
 select:hover, dialog select:hover {
@@ -233,30 +233,30 @@ table {
     background-color: #2e2e2e;
     border-radius: 10px;
     overflow: hidden;
-    color: #ffffff;
+    color: #ffffff; 
 }
 
 
 th {
     background-color: #363636;
-    padding: 15px 15px;
-    text-align: left;
-    border-bottom: 2px solid #555555;
+    padding: 15px 15px; 
+    text-align: left; 
+    border-bottom: 2px solid #555555; 
 }
 
 
 td {
-    padding: 15px 15px;
-    border-bottom: 1px solid #555555;
+    padding: 15px 15px; 
+    border-bottom: 1px solid #555555; 
 }
 
 
 tbody tr:nth-child(odd) {
-    background-color: #2e2e2e;
+    background-color: #2e2e2e; 
 }
 
 tbody tr:nth-child(even) {
-    background-color: #363636;
+    background-color: #363636; 
 }
 
 
@@ -277,7 +277,7 @@ tbody tr:last-child td {
 
 
 thead tr {
-    border-top: none;
+    border-top: none; 
 }
 
 dialog {

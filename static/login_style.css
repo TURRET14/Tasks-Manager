@@ -32,7 +32,7 @@ img {
 }
 
 #super_main {
-    display: flex;
+    display: flex; 
 }
 
 #main {
@@ -75,7 +75,7 @@ form {
 
 input {
     background: #2e2e2e;
-
+    
 }
 
 input:hover {
@@ -96,7 +96,7 @@ input {
     border-radius: 5px;
     outline: none;
     background: #2e2e2e;
-    cursor: pointer;
+    cursor: pointer; 
     padding: 5px;
 }
 

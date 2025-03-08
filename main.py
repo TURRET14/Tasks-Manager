@@ -10,26 +10,25 @@ import fastapi.security
 import fastapi.encoders
 import fastapi.exceptions
 import fastapi.staticfiles
+import fastapi.middleware.cors
 import starlette.status
 import bcrypt
 
 app = fastapi.FastAPI()
 
-app.mount("/static", fastapi.staticfiles.StaticFiles(directory="static"), name="static")
+app.add_middleware(
+    fastapi.middleware.cors.CORSMiddleware,
+    allow_origins = ["http://localhost:3000"],
+    allow_credentials = True,
+    allow_methods = ["GET", "POST", "PUT", "DELETE"],
+    allow_headers = ["Authorization"],
+    expose_headers = ["Authorization"]
+)
+
 
 @app.exception_handler(fastapi.exceptions.RequestValidationError)
 def validation_exception_handler(request: fastapi.Request, exc: fastapi.exceptions.RequestValidationError):
     return fastapi.responses.JSONResponse({"error": "VALIDATION_ERROR"}, status_code = starlette.status.HTTP_400_BAD_REQUEST)
-
-
-@app.get("/")
-def root():
-    return fastapi.responses.FileResponse("static/index.html")
-
-
-@app.get("/login")
-def get_login():
-    return fastapi.responses.FileResponse("static/login.html")
 
 
 @app.post("/login")

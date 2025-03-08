@@ -1,7 +1,9 @@
+var backendService = "http://localhost:8000";
+
 async function postLogin(event) {
     event.preventDefault();
     var data = new FormData(document.getElementById("login"));
-    var response = await fetch("/login", { method: "POST", body: data });
+    var response = await fetch(backendService + "/login", { method: "POST", body: data });
     if (response.ok == false) {
         if (response.status == 401) {
             alert("Неверный логин или пароль!");
@@ -35,7 +37,7 @@ document.getElementById("login").addEventListener("submit", postLogin);
 async function postRegister(event) {
     event.preventDefault();
     var data = new FormData(document.getElementById("register"));
-    var response = await fetch("/register", { method: "POST", body: data });
+    var response = await fetch(backendService + "/register", { method: "POST", body: data });
     if (response.ok == false) {
         if (response.status == 409) {
             alert("Логин И/Или Электронная почта уже заняты.");
