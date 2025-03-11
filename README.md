@@ -149,9 +149,13 @@ db = fastapi.Depends(get_db) - Получение сессии БД
 
 Параметры:
 
-data = fastapi.Body() - Тело запроса
+header : str = fastapi.Body(max_length=200) - Заголовок задачи
 
-Формат:
+text : str = fastapi.Body(max_length=3000) - Текст задачи
+
+status_id : int = fastapi.Body(ge=0, le=2) - ID статуса задачи
+
+Формат тела запроса (JSON):
 
 {
 "header": <Текст заголовка задачи>,
@@ -171,9 +175,15 @@ db = fastapi.Depends(get_db)) - Получение сессии БД
 
 Параметры:
 
-data = fastapi.Body() - Тело запроса
+id : int = fastapi.Body() - Уникальный ID задачи
 
-Формат:
+header : str = fastapi.Body(max_length=200) - Заголовок задачи
+
+text : str = fastapi.Body(max_length=3000) - Текст задачи
+
+status_id : int = fastapi.Body(ge=0, le=2) - ID статуса задачи
+
+Формат тела запроса (JSON):
 
 {
 "id": <ID задачи>,
@@ -194,9 +204,9 @@ db = fastapi.Depends(get_db)) - Получение сессии БД
 
 Параметры:
 
-data = fastapi.Body() - Тело запроса
+id : int = fastapi.Body() - Уникальный ID задачи
 
-Формат:
+Формат тела запроса (JSON):
 
 {
 "id": <ID задачи>
