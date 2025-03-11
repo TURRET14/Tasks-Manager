@@ -79,76 +79,68 @@ def get_tasks(token = fastapi.Depends(get_auth_bearer), db = fastapi.Depends(get
         payload = decode_jwt(token)
     except:
         return fastapi.responses.JSONResponse({"error": "UNAUTHORIZED_ERROR"}, status_code = starlette.status.HTTP_401_UNAUTHORIZED)
-    task_list = db.query(Tasks).filter(Tasks.user_id == payload["user_id"]).all()
-    return fastapi.responses.JSONResponse(fastapi.encoders.jsonable_encoder(task_list))
+
+    if db.query(Users).filter(Users.id == payload["user_id"]).first() is not None:
+        task_list = db.query(Tasks).filter(Tasks.user_id == payload["user_id"]).all()
+        return fastapi.responses.JSONResponse(fastapi.encoders.jsonable_encoder(task_list))
+    else:
+        return fastapi.responses.JSONResponse({"error": "UNAUTHORIZED_ERROR"}, status_code=starlette.status.HTTP_401_UNAUTHORIZED)
 
 # Отвечает за добавление новой задачи.
 @app.post("/tasks")
-def post_tasks(data = fastapi.Body(), token = fastapi.Depends(get_auth_bearer), db = fastapi.Depends(get_db)):
-    if len(data["header"]) > 200 or len(data["text"]) > 3000:
-        return fastapi.responses.JSONResponse({"error": "VALIDATION_ERROR"}, status_code=starlette.status.HTTP_400_BAD_REQUEST)
+def post_tasks(header : str = fastapi.Body(max_length=200), text : str = fastapi.Body(max_length=3000), status_id : int = fastapi.Body(ge=0, le=2), token = fastapi.Depends(get_auth_bearer), db = fastapi.Depends(get_db)):
     try:
         payload = decode_jwt(token)
     except:
         return fastapi.responses.JSONResponse({"error": "UNAUTHORIZED_ERROR"}, status_code=starlette.status.HTTP_401_UNAUTHORIZED)
-    try:
-        if str(data["status_id"]) != "0" and str(data["status_id"]) != "1" and str(data["status_id"]) != "2":
-            return fastapi.responses.JSONResponse({"error": "BAD_REQUEST_ERROR"}, status_code=starlette.status.HTTP_400_BAD_REQUEST)
-        task = Tasks(header=data["header"], text=data["text"], status_id=data["status_id"], user_id=payload["user_id"], creation_date=datetime.datetime.now(datetime.UTC))
+
+    if db.query(Users).filter(Users.id == payload["user_id"]).first() is not None:
+        task = Tasks(header=header, text=text, status_id=status_id, user_id=payload["user_id"], creation_date=datetime.datetime.now(datetime.UTC))
         db.add(task)
         db.commit()
         return fastapi.responses.JSONResponse({"message": "SUCCESS"})
-    except:
-        return fastapi.responses.JSONResponse({"error": "BAD_REQUEST_ERROR"}, status_code = starlette.status.HTTP_400_BAD_REQUEST)
+    else:
+        return fastapi.responses.JSONResponse({"error": "UNAUTHORIZED_ERROR"}, status_code=starlette.status.HTTP_401_UNAUTHORIZED)
 
 
 # Отвечает за изменение существующей задачи.
 @app.put("/tasks")
-def put_tasks(data = fastapi.Body(), token = fastapi.Depends(get_auth_bearer), db = fastapi.Depends(get_db)):
-    if len(data["header"]) > 200 or len(data["text"]) > 3000:
-        return fastapi.responses.JSONResponse({"error": "VALIDATION_ERROR"}, status_code=starlette.status.HTTP_400_BAD_REQUEST)
+def put_tasks(id : int = fastapi.Body(), header : str = fastapi.Body(max_length=200), text : str = fastapi.Body(max_length=3000), status_id : int = fastapi.Body(ge=0, le=2), token = fastapi.Depends(get_auth_bearer), db = fastapi.Depends(get_db)):
     try:
         payload = decode_jwt(token)
     except:
         return fastapi.responses.JSONResponse({"error": "UNAUTHORIZED_ERROR"}, status_code=starlette.status.HTTP_401_UNAUTHORIZED)
-    try:
-        if str(data["status_id"]) != "0" and str(data["status_id"]) != "1" and str(data["status_id"]) != "2":
-            return fastapi.responses.JSONResponse({"error": "BAD_REQUEST_ERROR"}, status_code=starlette.status.HTTP_400_BAD_REQUEST)
 
-        task = db.query(Tasks).filter(Tasks.id == data["id"]).first()
-        if task is not None:
-            if task.user_id != payload["user_id"]:
-                return fastapi.responses.JSONResponse({"error": "FORBIDDEN_ERROR"}, status_code=starlette.status.HTTP_403_FORBIDDEN)
-            else:
-                task.header = data["header"]
-                task.text = data["text"]
-                task.status_id = data["status_id"]
-                db.commit()
-                return fastapi.responses.JSONResponse({"message": "SUCCESS"})
+    task = db.query(Tasks).filter(Tasks.id == id).first()
+    if task is not None:
+        if task.user_id != payload["user_id"]:
+            return fastapi.responses.JSONResponse({"error": "FORBIDDEN_ERROR"}, status_code=starlette.status.HTTP_403_FORBIDDEN)
         else:
-            return fastapi.responses.JSONResponse({"error": "NOT_FOUND_ERROR"}, status_code=starlette.status.HTTP_404_NOT_FOUND)
-
-    except:
-        return fastapi.responses.JSONResponse({"error": "BAD_REQUEST_ERROR"}, status_code = starlette.status.HTTP_400_BAD_REQUEST)
+            task.header = header
+            task.text = text
+            task.status_id = status_id
+            db.commit()
+            return fastapi.responses.JSONResponse({"message": "SUCCESS"})
+    else:
+        return fastapi.responses.JSONResponse({"error": "NOT_FOUND_ERROR"}, status_code=starlette.status.HTTP_404_NOT_FOUND)
 
 
 # Отвечает за удаление существующей задачи.
 @app.delete("/tasks")
-def delete_tasks(data = fastapi.Body(), token = fastapi.Depends(get_auth_bearer), db = fastapi.Depends(get_db)):
+def delete_tasks(id : int = fastapi.Body(), token = fastapi.Depends(get_auth_bearer), db = fastapi.Depends(get_db)):
+    print(id)
     try:
         payload = decode_jwt(token)
     except:
         return fastapi.responses.JSONResponse({"error": "UNAUTHORIZED_ERROR"}, status_code=starlette.status.HTTP_401_UNAUTHORIZED)
-    try:
-        task = db.query(Tasks).filter(Tasks.id == data["id"]).first()
-        if task is not None:
-            if task.user_id != payload["user_id"]:
-                return fastapi.responses.JSONResponse({"error": "FORBIDDEN_ERROR"}, status_code=starlette.status.HTTP_403_FORBIDDEN)
-            else:
-                db.delete(task)
-                db.commit()
-                return fastapi.responses.JSONResponse({"message": "SUCCESS"})
+
+    task = db.query(Tasks).filter(Tasks.id == id).first()
+    if task is not None:
+        if task.user_id != payload["user_id"]:
+            return fastapi.responses.JSONResponse({"error": "FORBIDDEN_ERROR"}, status_code=starlette.status.HTTP_403_FORBIDDEN)
         else:
-            return fastapi.responses.JSONResponse({"error": "NOT_FOUND_ERROR"}, status_code=starlette.status.HTTP_404_NOT_FOUND)
-    except:
-        return fastapi.responses.JSONResponse({"error": "BAD_REQUEST_ERROR"}, status_code = starlette.status.HTTP_400_BAD_REQUEST)
+            db.delete(task)
+            db.commit()
+            return fastapi.responses.JSONResponse({"message": "SUCCESS"})
+    else:
+        return fastapi.responses.JSONResponse({"error": "NOT_FOUND_ERROR"}, status_code=starlette.status.HTTP_404_NOT_FOUND)

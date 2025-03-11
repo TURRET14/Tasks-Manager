@@ -282,15 +282,13 @@ document.getElementById("delete_task").addEventListener("click", async function 
     if (confirmation) {
         event.preventDefault();
         document.getElementById("dialog_change_task").close();
-        var taskData = {};
-        taskData.id = document.getElementById("change_id").textContent;
         var auth_token = localStorage.getItem("auth_token");
         if (auth_token == null) {
             alert("Пожалуйста, авторизуйтесь.");
             window.location.href = "/login";
             return;
         }
-        var taskDataJson = JSON.stringify(taskData);
+        var taskDataJson = JSON.stringify(document.getElementById("change_id").textContent);
         var response = await fetch(backendService + "/tasks", { method: "DELETE", body: taskDataJson, headers: { "Authorization": "Bearer " + auth_token, "Content-Type": "application/json" } });
         if (response.ok == false) {
             if (response.status == 401) {
