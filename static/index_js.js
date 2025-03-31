@@ -32,7 +32,7 @@ async function filter(event) {
         var str = document.getElementById("filter_date").value;
         if (isNaN(creationDate.getTime()) == false) {
             tasks = tasks.filter(function (task) {
-                var taskDate = new Date(task.creation_date + "Z");
+                var taskDate = new Date(task.creation_date);
                 if (creationDate.getDate() == taskDate.getDate() && creationDate.getMonth() == taskDate.getMonth() && creationDate.getFullYear() == taskDate.getFullYear()) {
                     return true;
                 }
@@ -166,7 +166,7 @@ async function putTasks() {
         row.appendChild(statusCell);
         var creationDateCell = document.createElement("td");
         creationDateCell.className = "task_creation_date";
-        creationDateCell.textContent = new Date(task.creation_date + "Z").toDateString();
+        creationDateCell.textContent = new Date(task.creation_date).toLocaleString();
         row.appendChild(creationDateCell);
     }
 }
@@ -241,10 +241,10 @@ document.getElementById("change_task_form").addEventListener("submit", async fun
     event.preventDefault();
     document.getElementById("dialog_change_task").close();
     var taskData = {};
-    taskData.id = document.getElementById("change_id").textContent;
-    taskData.header = document.getElementById("change_header").value;
-    taskData.text = document.getElementById("change_text").value;
-    taskData.status_id = document.getElementById("change_status_id").value;
+    taskData.task_id = document.getElementById("change_id").textContent;
+    taskData.task_header = document.getElementById("change_header").value;
+    taskData.task_text = document.getElementById("change_text").value;
+    taskData.task_status_id = document.getElementById("change_status_id").value;
     var auth_token = localStorage.getItem("auth_token");
     if (auth_token == null) {
         alert("Пожалуйста, авторизуйтесь.");
@@ -288,7 +288,7 @@ document.getElementById("delete_task").addEventListener("click", async function 
             window.location.href = "/login";
             return;
         }
-        var taskDataJson = JSON.stringify(document.getElementById("change_id").textContent);
+        var taskDataJson = JSON.stringify({"task_id": document.getElementById("change_id").textContent});
         var response = await fetch(backendService + "/tasks", { method: "DELETE", body: taskDataJson, headers: { "Authorization": "Bearer " + auth_token, "Content-Type": "application/json" } });
         if (response.ok == false) {
             if (response.status == 401) {

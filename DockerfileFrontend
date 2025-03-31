@@ -1,4 +1,4 @@
-FROM python:3.13
+FROM python:3.13-slim
 
 WORKDIR /app
 
@@ -6,9 +6,9 @@ WORKDIR /app
 COPY requirements_frontend.txt .
 RUN pip install --no-cache-dir -r requirements_frontend.txt
 
-COPY frontend_service.py .
+COPY /frontend /app/frontend
 COPY /static /app/static
 
 
 EXPOSE 3000
-CMD ["uvicorn", "frontend_service:app", "--host", "0.0.0.0", "--port", "3000"]
+CMD ["uvicorn", "frontend.frontend_core:app", "--host", "0.0.0.0", "--port", "3000"]

@@ -11,5 +11,5 @@ CREATE TABLE tasks (
     status_id SMALLINT,
     user_id BIGINT NOT NULL REFERENCES users(id) ON UPDATE CASCADE ON DELETE CASCADE,
     header VARCHAR(200),
-    creation_date TIMESTAMP NOT NULL
+    creation_date TIMESTAMPTZ NOT NULL
 );

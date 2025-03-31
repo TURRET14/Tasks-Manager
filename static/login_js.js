@@ -2,8 +2,13 @@ var backendService = "http://localhost:8000";
 
 async function postLogin(event) {
     event.preventDefault();
-    var data = new FormData(document.getElementById("login"));
-    var response = await fetch(backendService + "/login", { method: "POST", body: data });
+    var form= new FormData(document.getElementById("login"));
+    var formData = {};
+    for (entry of form) {
+        formData[entry[0]] = entry[1];
+    }
+    var formDataJson = JSON.stringify(formData);
+    var response = await fetch(backendService + "/login", { method: "POST", body: formDataJson,  headers: {"Content-Type": "application/json"} });
     if (response.ok == false) {
         if (response.status == 401) {
             alert("Неверный логин или пароль!");
@@ -36,8 +41,13 @@ document.getElementById("login").addEventListener("submit", postLogin);
 
 async function postRegister(event) {
     event.preventDefault();
-    var data = new FormData(document.getElementById("register"));
-    var response = await fetch(backendService + "/register", { method: "POST", body: data });
+    var form = new FormData(document.getElementById("register"));
+    var formData = {};
+    for (entry of form) {
+        formData[entry[0]] = entry[1];
+    }
+    var formDataJson = JSON.stringify(formData);
+    var response = await fetch(backendService + "/register", { method: "POST", body: formDataJson, headers: {"Content-Type": "application/json"} });
     if (response.ok == false) {
         if (response.status == 409) {
             alert("Логин И/Или Электронная почта уже заняты.");

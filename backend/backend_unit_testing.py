@@ -3,8 +3,8 @@ import sqlalchemy.pool
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from db import Base, Users, Tasks, get_db
-from main import app
+from backend_db import Base, Users, get_db
+from backend.backend_handles import app
 
 SQLALCHEMY_DATABASE_URL = "sqlite:///:memory:"
 engine = create_engine(SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False}, poolclass=sqlalchemy.pool.StaticPool)
