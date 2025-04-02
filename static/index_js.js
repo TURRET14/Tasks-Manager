@@ -1,4 +1,45 @@
-var backendService = "http://localhost:8000";
+const backendService = "http://localhost:8000";
+var userId;
+var userLogin;
+
+async function getUserId() {
+    var auth_token = localStorage.getItem("auth_token");
+    try {
+        var response = await fetch(backendService + "/get_current_user_id", { method: "GET", headers: { "Authorization": "Bearer " + auth_token } });
+    }
+    catch {
+        alert("Ошибка соединения с сервером. Попробуйте позже.");
+        window.close();
+    }
+    if (response.ok) {
+        var responseJson = await response.json();
+        userId = Number(responseJson);
+    }
+    else {
+        alert("Сессия авторизации истекла. Пожалуйста, авторизуйтесь.");
+        window.location.href = "/login";
+    }
+}
+async function getUserLogin() {
+    var auth_token = localStorage.getItem("auth_token");
+    try {
+        var response = await fetch(backendService + "/get_current_user_login", { method: "GET", headers: { "Authorization": "Bearer " + auth_token } });
+    }
+    catch {
+        alert("Ошибка соединения с сервером. Попробуйте позже.");
+        window.close();
+    }
+    if (response.ok) {
+        var responseJson = await response.json();
+        userLogin = String(responseJson);
+        document.getElementById("display_login").textContent = userLogin;
+    }
+    else {
+        alert("Сессия авторизации истекла. Пожалуйста, авторизуйтесь.");
+        window.location.href = "/login";
+    }
+}
+
 
 var statusSortAsc = true;
 var dateSortAsc = true;
@@ -107,34 +148,35 @@ document.getElementById("date_header").addEventListener("click", sortByDate);
 
 async function putTasks() {
     document.getElementById("tasks_table").innerHTML = "";
-
     for (task of tasks) {
         var row = document.createElement("tr");
         document.getElementById("tasks_table").appendChild(row);
-        row.addEventListener("click", function (event) {
-            document.getElementById("dialog_change_task").showModal();
-            document.getElementById("change_id").textContent = event.currentTarget.getElementsByClassName("task_id")[0].textContent;
-            document.getElementById("change_header").value = event.currentTarget.getElementsByClassName("task_header")[0].textContent;
-            document.getElementById("change_text").value = event.currentTarget.getElementsByClassName("task_text")[0].textContent;
-            var status_id = event.currentTarget.getElementsByClassName("task_status_id")[0].textContent;
-            switch (status_id) {
-                case "Новая":
-                    status_id = 0;
-                    break;
-                case "В работе":
-                    status_id = 1;
-                    break;
-                case "Завершена":
-                    status_id = 2;
-                    break;
-                default:
-                    status_id = 0;
-                    break;
-            }
-            document.getElementById("change_status_id").value = status_id;
-            document.getElementById("change_creation_date").textContent = event.currentTarget.getElementsByClassName("task_creation_date")[0].textContent;
-        });
-
+        if (task.creator_user_login == userLogin) {
+            row.addEventListener("click", function (event) {
+                document.getElementById("dialog_change_task").showModal();
+                document.getElementById("change_id").textContent = event.currentTarget.getElementsByClassName("task_id")[0].textContent;
+                document.getElementById("change_header").value = event.currentTarget.getElementsByClassName("task_header")[0].textContent;
+                document.getElementById("change_text").value = event.currentTarget.getElementsByClassName("task_text")[0].textContent;
+                var status_id = event.currentTarget.getElementsByClassName("task_status_id")[0].textContent;
+                switch (status_id) {
+                    case "Новая":
+                        status_id = 0;
+                        break;
+                    case "В работе":
+                        status_id = 1;
+                        break;
+                    case "Завершена":
+                        status_id = 2;
+                        break;
+                    default:
+                        status_id = 0;
+                        break;
+                }
+                document.getElementById("change_status_id").value = status_id;
+                document.getElementById("change_assigned_user_login").value = event.currentTarget.getElementsByClassName("task_assigned_user_login")[0].textContent;
+                document.getElementById("change_creation_date").textContent = event.currentTarget.getElementsByClassName("task_creation_date")[0].textContent;
+            });
+        }
         var idCell = document.createElement("td");
         idCell.className = "task_id";
         idCell.textContent = task.id;
@@ -147,6 +189,29 @@ async function putTasks() {
         textCell.className = "task_text";
         textCell.textContent = task.text;
         row.appendChild(textCell);
+        var creatorCell = document.createElement("td");
+        if (task.creator_user_login == userLogin) {
+            creatorCell.textContent = task.creator_user_login +  " (Вы)";
+        }
+        else {
+            creatorCell.textContent = task.creator_user_login;
+        }
+        row.append(creatorCell);
+        var assigneeCell = document.createElement("td");
+        if (task.assigned_user_login == userLogin) {
+            var spanMain = document.createElement("span");
+            spanMain.textContent = task.assigned_user_login;
+            spanMain.className = "task_assigned_user_login";
+            var spanPostscript = document.createElement("span");
+            spanPostscript.textContent = " (Вы)";
+            assigneeCell.appendChild(spanMain);
+            assigneeCell.appendChild(spanPostscript);
+        }
+        else {
+            assigneeCell.className = "task_assigned_user_login";
+            assigneeCell.textContent = task.assigned_user_login;
+        }
+        row.appendChild(assigneeCell);
         var statusCell = document.createElement("td");
         statusCell.className = "task_status_id";
         switch (task.status_id) {
@@ -172,11 +237,19 @@ async function putTasks() {
 }
 
 async function getData() {
+    await getUserId();
+    await getUserLogin();
     statusSortAsc = true;
     dateSortAsc = true;
     var auth_token = localStorage.getItem("auth_token");
     if (auth_token != null) {
-        var tasksRequest = await fetch(backendService + "/tasks", { method: "GET", headers: { "Authorization": "Bearer " + auth_token } });
+        try {
+            var tasksRequest = await fetch(backendService + "/tasks", { method: "GET", headers: { "Authorization": "Bearer " + auth_token } });
+        }
+        catch {
+            alert("Ошибка соединения с сервером. Попробуйте позже.");
+            window.close();
+        }
         if (tasksRequest.ok == true) {
             var jsonResponse = await tasksRequest.json();
             allTasks = jsonResponse;
@@ -219,7 +292,13 @@ document.getElementById("add_task_form").addEventListener("submit", async functi
         window.location.href = "/login";
         return;
     }
-    var postResponse = await fetch(backendService + "/tasks", { method: "POST", body: formDataJson, headers: { "Authorization": "Bearer " + auth_token, "Content-Type": "application/json" } });
+    try {
+        var postResponse = await fetch(backendService + "/tasks", { method: "POST", body: formDataJson, headers: { "Authorization": "Bearer " + auth_token, "Content-Type": "application/json" } });
+    }
+    catch {
+        alert("Ошибка соединения с сервером. Попробуйте позже.");
+        window.close();
+    }
     if (postResponse.ok == false) {
         if (postResponse.status == 401) {
             alert("Сессия авторизации истекла. Пожалуйста, авторизуйтесь.");
@@ -245,6 +324,7 @@ document.getElementById("change_task_form").addEventListener("submit", async fun
     taskData.task_header = document.getElementById("change_header").value;
     taskData.task_text = document.getElementById("change_text").value;
     taskData.task_status_id = document.getElementById("change_status_id").value;
+    taskData.task_assigned_user_login = document.getElementById("change_assigned_user_login").value;
     var auth_token = localStorage.getItem("auth_token");
     if (auth_token == null) {
         alert("Пожалуйста, авторизуйтесь.");
@@ -252,7 +332,13 @@ document.getElementById("change_task_form").addEventListener("submit", async fun
         return;
     }
     var taskDataJson = JSON.stringify(taskData);
-    var response = await fetch(backendService + "/tasks", { method: "PUT", body: taskDataJson, headers: { "Authorization": "Bearer " + auth_token, "Content-Type": "application/json" } });
+    try {
+        var response = await fetch(backendService + "/tasks", { method: "PUT", body: taskDataJson, headers: { "Authorization": "Bearer " + auth_token, "Content-Type": "application/json" } });
+    }
+    catch {
+        alert("Ошибка соединения с сервером. Попробуйте позже.");
+        window.close();
+    }
     if (response.ok == false) {
         if (response.status == 401) {
             alert("Сессия авторизации истекла. Пожалуйста, авторизуйтесь.");
@@ -288,8 +374,14 @@ document.getElementById("delete_task").addEventListener("click", async function 
             window.location.href = "/login";
             return;
         }
-        var taskDataJson = JSON.stringify({"task_id": document.getElementById("change_id").textContent});
-        var response = await fetch(backendService + "/tasks", { method: "DELETE", body: taskDataJson, headers: { "Authorization": "Bearer " + auth_token, "Content-Type": "application/json" } });
+        var taskDataJson = JSON.stringify({ "task_id": document.getElementById("change_id").textContent });
+        try {
+            var response = await fetch(backendService + "/tasks", { method: "DELETE", body: taskDataJson, headers: { "Authorization": "Bearer " + auth_token, "Content-Type": "application/json" } });
+        }
+        catch {
+            alert("Ошибка соединения с сервером. Попробуйте позже.");
+            window.close();
+        }
         if (response.ok == false) {
             if (response.status == 401) {
                 alert("Сессия авторизации истекла. Пожалуйста, авторизуйтесь.");

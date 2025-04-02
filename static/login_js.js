@@ -1,4 +1,4 @@
-var backendService = "http://localhost:8000";
+const backendService = "http://localhost:8000";
 
 async function postLogin(event) {
     event.preventDefault();
@@ -8,7 +8,13 @@ async function postLogin(event) {
         formData[entry[0]] = entry[1];
     }
     var formDataJson = JSON.stringify(formData);
+    try {
     var response = await fetch(backendService + "/login", { method: "POST", body: formDataJson,  headers: {"Content-Type": "application/json"} });
+    }
+    catch {
+        alert("Ошибка соединения с сервером. Попробуйте позже.");
+        window.close();
+    }
     if (response.ok == false) {
         if (response.status == 401) {
             alert("Неверный логин или пароль!");
@@ -47,7 +53,13 @@ async function postRegister(event) {
         formData[entry[0]] = entry[1];
     }
     var formDataJson = JSON.stringify(formData);
+    try {
     var response = await fetch(backendService + "/register", { method: "POST", body: formDataJson, headers: {"Content-Type": "application/json"} });
+    }
+    catch {
+        alert("Ошибка соединения с сервером. Попробуйте позже.");
+        window.close();
+    }
     if (response.ok == false) {
         if (response.status == 409) {
             alert("Логин И/Или Электронная почта уже заняты.");

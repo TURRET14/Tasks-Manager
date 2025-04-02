@@ -41,14 +41,16 @@ def post_register_function(data : backend_pydantic_models.RegisterForm, db_sessi
 
 def get_tasks_function(token_payload : dict, db_session : sqlalchemy.orm.session.Session):
     if db_session.query(Users).filter(Users.id == token_payload["user_id"]).first() is not None:
-        task_list = db_session.query(Tasks).filter(Tasks.user_id == token_payload["user_id"]).all()
-        return fastapi.encoders.jsonable_encoder(task_list)
+        CreatorUsers = sqlalchemy.orm.aliased(Users)
+        AssignedUsers = sqlalchemy.orm.aliased(Users)
+        return db_session.query(Tasks.id, Tasks.header, Tasks.text, Tasks.status_id, CreatorUsers.login.label("creator_user_login"), AssignedUsers.login.label("assigned_user_login"), Tasks.creation_date).filter(sqlalchemy.or_(Tasks.user_id == token_payload["user_id"], Tasks.assigned_user_id == token_payload["user_id"])).outerjoin(CreatorUsers, CreatorUsers.id == Tasks.user_id).outerjoin(AssignedUsers, AssignedUsers.id == Tasks.assigned_user_id).all()
     else:
         return fastapi.responses.JSONResponse({"error": "UNAUTHORIZED_ERROR"}, status_code=starlette.status.HTTP_401_UNAUTHORIZED)
 
 def post_tasks_function(data : backend_pydantic_models.PostTasksForm, token_payload : dict, db_session : sqlalchemy.orm.session.Session):
     if db_session.query(Users).filter(Users.id == token_payload["user_id"]).first() is not None:
-        task = Tasks(header=data.task_header, text=data.task_text, status_id=data.task_status_id, user_id=token_payload["user_id"], creation_date=datetime.datetime.now(datetime.UTC))
+        assigned_user_id = db_session.query(Users.id).filter(Users.login == data.task_assigned_user_login).scalar()
+        task = Tasks(header=data.task_header, text=data.task_text, status_id=data.task_status_id, user_id=token_payload["user_id"], assigned_user_id = assigned_user_id, creation_date=datetime.datetime.now(datetime.UTC))
         db_session.add(task)
         db_session.commit()
         return fastapi.responses.JSONResponse({"message": "SUCCESS"})
@@ -61,9 +63,11 @@ def put_tasks_function(data : backend_pydantic_models.PutTasksForm, token_payloa
         if task.user_id != token_payload["user_id"]:
             return fastapi.responses.JSONResponse({"error": "FORBIDDEN_ERROR"}, status_code=starlette.status.HTTP_403_FORBIDDEN)
         else:
+            assigned_user_id = db_session.query(Users.id).filter(Users.login == data.task_assigned_user_login).scalar()
             task.header = data.task_header
             task.text = data.task_text
             task.status_id = data.task_status_id
+            task.assigned_user_id = assigned_user_id
             db_session.commit()
             return fastapi.responses.JSONResponse({"message": "SUCCESS"})
     else:
@@ -80,3 +84,9 @@ def delete_tasks_function(data : backend_pydantic_models.DeleteTasksForm, token_
             return fastapi.responses.JSONResponse({"message": "SUCCESS"})
     else:
         return fastapi.responses.JSONResponse({"error": "NOT_FOUND_ERROR"}, status_code=starlette.status.HTTP_404_NOT_FOUND)
+
+def get_user_id_function(token_payload : dict):
+    return token_payload["user_id"]
+
+def get_user_login_function(token_payload : dict, db_session : sqlalchemy.orm.session.Session):
+    return db_session.query(Users.login).filter(Users.id == token_payload["user_id"]).scalar()

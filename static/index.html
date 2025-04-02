@@ -14,13 +14,14 @@
             <p class="name_text">Добавление задачи</p>
             <p>Заголовок: <input id="task_header" name="task_header" type="text" maxlength="200"></p>
             <p>Текст: <textarea id="text" name="task_text" type="text" rows="5" cols="40" maxlength="3000"></textarea></p>
-            <p>Статус: 
+            <p>Статус:
                 <select id="status_id" name="task_status_id">
                     <option value="0">Новая</option>
                     <option value="1">В работе</option>
                     <option value="2">Завершена</option>
                 </select>
             </p>
+            <p>Ответственный (Логин): <input id="assigned_user" name="task_assigned_user_login" type="text"></p>
             <p><input id="dialog_add_task_button" type="submit" value="Добавить"><button id="close_button_add" type="button">Закрыть</button></p>
         </form>
     </dialog>
@@ -38,6 +39,7 @@
                     <option value="2">Завершена</option>
                 </select>
             </p>
+            <p>Ответственный (Логин): <input id="change_assigned_user_login" name="change_assigned_user_login" type="text"></p>
             <p>Дата создания: <span id="change_creation_date"></span></p>
             <p><input id="change_dialog_add_task_button" type="submit" value="Изменить">
                 <button id="delete_task" type="button">Удалить</button><button id="close_button_change" type="button">Закрыть</button>
@@ -52,6 +54,7 @@
             <div id="header">
                 <img src="/static/note.png">
                 <span id="name_span">Менеджер Задач</span>
+                <span id="display_login"></span>
                 <button id="exit_button" type="button">Выйти</button>
             </div>
             <div id="little_main">
@@ -79,6 +82,8 @@
                         <td>ID</td>
                         <td>Заголовок</td>
                         <td>Текст</td>
+                        <td>Создатель</td>
+                        <td>Ответственный</td>
                         <td id="status_header">Статус</td>
                         <td id="date_header">Дата создания</td>
                     </tr>

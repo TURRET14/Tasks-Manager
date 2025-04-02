@@ -43,7 +43,7 @@ def get_tasks(token = fastapi.Depends(get_auth_bearer), db_session = fastapi.Dep
 
 
 # Отвечает за добавление новой задачи.
-@router.post("/tasks", response_class=list[fastapi.responses.JSONResponse], description="Отвечает за добавление новой задачи.")
+@router.post("/tasks", response_class=fastapi.responses.JSONResponse, description="Отвечает за добавление новой задачи.")
 def post_tasks(data : backend_pydantic_models.PostTasksForm, token = fastapi.Depends(get_auth_bearer), db_session = fastapi.Depends(get_db)):
     try:
         token_payload = decode_jwt(token)
@@ -53,6 +53,7 @@ def post_tasks(data : backend_pydantic_models.PostTasksForm, token = fastapi.Dep
     try:
         return backend_functions.post_tasks_function(data, token_payload, db_session)
     except:
+        print("Exception Occured")
         return fastapi.responses.JSONResponse({"error": "INTERNAL_SERVER_ERROR"}, status_code=starlette.status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
@@ -80,5 +81,31 @@ def delete_tasks(data : backend_pydantic_models.DeleteTasksForm, token = fastapi
 
     try:
         return backend_functions.delete_tasks_function(data, token_payload, db_session)
+    except:
+        return fastapi.responses.JSONResponse({"error": "INTERNAL_SERVER_ERROR"}, status_code=starlette.status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+# Возвращает ID текущего пользователя.
+@router.get("/get_current_user_id", response_class=fastapi.responses.JSONResponse, description="Возвращает ID текущего пользователя.")
+def get_id(token = fastapi.Depends(get_auth_bearer)):
+    try:
+        token_payload = decode_jwt(token)
+    except:
+        return fastapi.responses.JSONResponse({"error": "UNAUTHORIZED_ERROR"}, status_code=starlette.status.HTTP_401_UNAUTHORIZED)
+
+    try:
+        return backend_functions.get_user_id_function(token_payload)
+    except:
+        return fastapi.responses.JSONResponse({"error": "INTERNAL_SERVER_ERROR"}, status_code=starlette.status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+# Возвращает логин текущего пользователя.
+@router.get("/get_current_user_login", response_class=fastapi.responses.JSONResponse, description="Возвращает логин текущего пользователя.")
+def get_id(token = fastapi.Depends(get_auth_bearer), db_session = fastapi.Depends(get_db)):
+    try:
+        token_payload = decode_jwt(token)
+    except:
+        return fastapi.responses.JSONResponse({"error": "UNAUTHORIZED_ERROR"}, status_code=starlette.status.HTTP_401_UNAUTHORIZED)
+
+    try:
+        return backend_functions.get_user_login_function(token_payload, db_session)
     except:
         return fastapi.responses.JSONResponse({"error": "INTERNAL_SERVER_ERROR"}, status_code=starlette.status.HTTP_500_INTERNAL_SERVER_ERROR)

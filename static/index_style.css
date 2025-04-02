@@ -28,7 +28,15 @@ img {
     display: flex;
 }
 
-#main, #little_main {
+#main {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: stretch;
+    border-radius: 25px;
+}
+
+#little_main {
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -53,6 +61,10 @@ img {
     align-items: center;
     margin-bottom: 25px;
     margin-top: 25px;
+}
+
+#display_login, #exit_button {
+    margin-left: auto;
 }
 
 #filter {
