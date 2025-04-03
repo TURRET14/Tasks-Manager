@@ -1,25 +1,8 @@
 const backendService = "http://localhost:8000";
-var userId;
 var userLogin;
 
-async function getUserId() {
-    var auth_token = localStorage.getItem("auth_token");
-    try {
-        var response = await fetch(backendService + "/get_current_user_id", { method: "GET", headers: { "Authorization": "Bearer " + auth_token } });
-    }
-    catch {
-        alert("Ошибка соединения с сервером. Попробуйте позже.");
-        window.close();
-    }
-    if (response.ok) {
-        var responseJson = await response.json();
-        userId = Number(responseJson);
-    }
-    else {
-        alert("Сессия авторизации истекла. Пожалуйста, авторизуйтесь.");
-        window.location.href = "/login";
-    }
-}
+var calendar = flatpickr("#filter_date", {"dateFormat": "d.m.Y", "locale": "ru",  "allowInput": true, "disableMobile": true});
+
 async function getUserLogin() {
     var auth_token = localStorage.getItem("auth_token");
     try {
@@ -27,7 +10,6 @@ async function getUserLogin() {
     }
     catch {
         alert("Ошибка соединения с сервером. Попробуйте позже.");
-        window.close();
     }
     if (response.ok) {
         var responseJson = await response.json();
@@ -37,6 +19,7 @@ async function getUserLogin() {
     else {
         alert("Сессия авторизации истекла. Пожалуйста, авторизуйтесь.");
         window.location.href = "/login";
+        throw Error("REDIRECT_IN_PROGRESS");
     }
 }
 
@@ -69,8 +52,8 @@ async function filter(event) {
     tasks = [...allTasks];
     var statusId = document.getElementById("filter_status").value;
     if (document.getElementById("is_date_enabled").checked == true) {
-        var creationDate = new Date(document.getElementById("filter_date").value);
-        var str = document.getElementById("filter_date").value;
+        var creationDateArray = document.getElementById("filter_date").value.split(".");
+        var creationDate = new Date(creationDateArray[2], creationDateArray[1] - 1, creationDateArray[0]);
         if (isNaN(creationDate.getTime()) == false) {
             tasks = tasks.filter(function (task) {
                 var taskDate = new Date(task.creation_date);
@@ -100,6 +83,7 @@ async function signOut(event) {
     if (exitConfirmation == true) {
         localStorage.removeItem("auth_token");
         window.location.href = "/login";
+        throw Error("REDIRECT_IN_PROGRESS");
     }
 }
 
@@ -196,7 +180,7 @@ async function putTasks() {
         else {
             creatorCell.textContent = task.creator_user_login;
         }
-        row.append(creatorCell);
+        row.appendChild(creatorCell);
         var assigneeCell = document.createElement("td");
         if (task.assigned_user_login == userLogin) {
             var spanMain = document.createElement("span");
@@ -237,7 +221,6 @@ async function putTasks() {
 }
 
 async function getData() {
-    await getUserId();
     await getUserLogin();
     statusSortAsc = true;
     dateSortAsc = true;
@@ -248,7 +231,6 @@ async function getData() {
         }
         catch {
             alert("Ошибка соединения с сервером. Попробуйте позже.");
-            window.close();
         }
         if (tasksRequest.ok == true) {
             var jsonResponse = await tasksRequest.json();
@@ -260,6 +242,7 @@ async function getData() {
             if (tasksRequest.status == 401) {
                 alert("Сессия авторизации истекла. Пожалуйста, авторизуйтесь.");
                 window.location.href = "/login";
+                throw Error("REDIRECT_IN_PROGRESS");
             }
             else {
                 alert("Внутренняя ошибка сервера. Перезагрузите страницу.");
@@ -269,6 +252,7 @@ async function getData() {
     else {
         alert("Пожалуйста, авторизуйтесь.");
         window.location.href = "/login";
+        throw Error("REDIRECT_IN_PROGRESS");
     }
 }
 
@@ -290,19 +274,19 @@ document.getElementById("add_task_form").addEventListener("submit", async functi
     if (auth_token == null) {
         alert("Пожалуйста, авторизуйтесь.");
         window.location.href = "/login";
-        return;
+        throw Error("REDIRECT_IN_PROGRESS");
     }
     try {
         var postResponse = await fetch(backendService + "/tasks", { method: "POST", body: formDataJson, headers: { "Authorization": "Bearer " + auth_token, "Content-Type": "application/json" } });
     }
     catch {
         alert("Ошибка соединения с сервером. Попробуйте позже.");
-        window.close();
     }
     if (postResponse.ok == false) {
         if (postResponse.status == 401) {
             alert("Сессия авторизации истекла. Пожалуйста, авторизуйтесь.");
             window.location.href = "/login";
+            throw Error("REDIRECT_IN_PROGRESS");
         }
         else if (postResponse.status == 400) {
             alert("Ошибка записи данных.");
@@ -329,7 +313,7 @@ document.getElementById("change_task_form").addEventListener("submit", async fun
     if (auth_token == null) {
         alert("Пожалуйста, авторизуйтесь.");
         window.location.href = "/login";
-        return;
+        throw Error("REDIRECT_IN_PROGRESS");
     }
     var taskDataJson = JSON.stringify(taskData);
     try {
@@ -337,12 +321,12 @@ document.getElementById("change_task_form").addEventListener("submit", async fun
     }
     catch {
         alert("Ошибка соединения с сервером. Попробуйте позже.");
-        window.close();
     }
     if (response.ok == false) {
         if (response.status == 401) {
             alert("Сессия авторизации истекла. Пожалуйста, авторизуйтесь.");
             window.location.href = "/login";
+            throw Error("REDIRECT_IN_PROGRESS");
         }
         else if (response.status == 400) {
             alert("Ошибка записи данных.");
@@ -366,13 +350,12 @@ document.getElementById("delete_task").addEventListener("click", async function 
     event.preventDefault();
     var confirmation = confirm("Вы уверены, что хотите удалить задачу?");
     if (confirmation) {
-        event.preventDefault();
         document.getElementById("dialog_change_task").close();
         var auth_token = localStorage.getItem("auth_token");
         if (auth_token == null) {
             alert("Пожалуйста, авторизуйтесь.");
             window.location.href = "/login";
-            return;
+            throw Error("REDIRECT_IN_PROGRESS");
         }
         var taskDataJson = JSON.stringify({ "task_id": document.getElementById("change_id").textContent });
         try {
@@ -380,12 +363,12 @@ document.getElementById("delete_task").addEventListener("click", async function 
         }
         catch {
             alert("Ошибка соединения с сервером. Попробуйте позже.");
-            window.close();
         }
         if (response.ok == false) {
             if (response.status == 401) {
                 alert("Сессия авторизации истекла. Пожалуйста, авторизуйтесь.");
                 window.location.href = "/login";
+                throw Error("REDIRECT_IN_PROGRESS");
             }
             else if (response.status == 400) {
                 alert("Ошибка удаления данных.");

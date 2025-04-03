@@ -8,8 +8,9 @@ CREATE TABLE users (
 CREATE TABLE tasks (
     id BIGSERIAL PRIMARY KEY,
     text VARCHAR(3000),
-    status_id SMALLINT,
-    user_id BIGINT NOT NULL REFERENCES users(id) ON UPDATE CASCADE ON DELETE CASCADE,
     header VARCHAR(200),
+    status_id SMALLINT,
+    user_id BIGINT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    assigned_user_id BIGINT REFERENCES users(id) ON DELETE SET NULL,
     creation_date TIMESTAMPTZ NOT NULL
 );

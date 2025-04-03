@@ -84,18 +84,6 @@ def delete_tasks(data : backend_pydantic_models.DeleteTasksForm, token = fastapi
     except:
         return fastapi.responses.JSONResponse({"error": "INTERNAL_SERVER_ERROR"}, status_code=starlette.status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-# Возвращает ID текущего пользователя.
-@router.get("/get_current_user_id", response_class=fastapi.responses.JSONResponse, description="Возвращает ID текущего пользователя.")
-def get_id(token = fastapi.Depends(get_auth_bearer)):
-    try:
-        token_payload = decode_jwt(token)
-    except:
-        return fastapi.responses.JSONResponse({"error": "UNAUTHORIZED_ERROR"}, status_code=starlette.status.HTTP_401_UNAUTHORIZED)
-
-    try:
-        return backend_functions.get_user_id_function(token_payload)
-    except:
-        return fastapi.responses.JSONResponse({"error": "INTERNAL_SERVER_ERROR"}, status_code=starlette.status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 # Возвращает логин текущего пользователя.
 @router.get("/get_current_user_login", response_class=fastapi.responses.JSONResponse, description="Возвращает логин текущего пользователя.")

@@ -9,6 +9,7 @@ import bcrypt
 import sqlalchemy.orm
 from backend import backend_pydantic_models
 
+
 def post_login_function(data : backend_pydantic_models.LoginForm, db_session : sqlalchemy.orm.session.Session):
     user = db_session.query(Users).filter(Users.login == data.login_input).first()
     if user is None:
@@ -23,6 +24,7 @@ def post_login_function(data : backend_pydantic_models.LoginForm, db_session : s
             return fastapi.responses.JSONResponse({"error": "INCORRECT_PASSWORD_ERROR"}, status_code=starlette.status.HTTP_401_UNAUTHORIZED)
     except:
         return fastapi.responses.JSONResponse({"error": "INCORRECT_PASSWORD_ERROR"}, status_code=starlette.status.HTTP_401_UNAUTHORIZED)
+
 
 def post_register_function(data : backend_pydantic_models.RegisterForm, db_session : sqlalchemy.orm.session.Session):
     if db_session.query(Users).filter(Users.login == data.login_input).first() is not None:
@@ -39,6 +41,7 @@ def post_register_function(data : backend_pydantic_models.RegisterForm, db_sessi
         token = encode_jwt(payload)
         return fastapi.responses.JSONResponse({"message": "AUTHORIZATION_SUCCESS"}, headers={"Authorization": "Bearer " + token})
 
+
 def get_tasks_function(token_payload : dict, db_session : sqlalchemy.orm.session.Session):
     if db_session.query(Users).filter(Users.id == token_payload["user_id"]).first() is not None:
         CreatorUsers = sqlalchemy.orm.aliased(Users)
@@ -46,6 +49,7 @@ def get_tasks_function(token_payload : dict, db_session : sqlalchemy.orm.session
         return db_session.query(Tasks.id, Tasks.header, Tasks.text, Tasks.status_id, CreatorUsers.login.label("creator_user_login"), AssignedUsers.login.label("assigned_user_login"), Tasks.creation_date).filter(sqlalchemy.or_(Tasks.user_id == token_payload["user_id"], Tasks.assigned_user_id == token_payload["user_id"])).outerjoin(CreatorUsers, CreatorUsers.id == Tasks.user_id).outerjoin(AssignedUsers, AssignedUsers.id == Tasks.assigned_user_id).all()
     else:
         return fastapi.responses.JSONResponse({"error": "UNAUTHORIZED_ERROR"}, status_code=starlette.status.HTTP_401_UNAUTHORIZED)
+
 
 def post_tasks_function(data : backend_pydantic_models.PostTasksForm, token_payload : dict, db_session : sqlalchemy.orm.session.Session):
     if db_session.query(Users).filter(Users.id == token_payload["user_id"]).first() is not None:
@@ -56,6 +60,7 @@ def post_tasks_function(data : backend_pydantic_models.PostTasksForm, token_payl
         return fastapi.responses.JSONResponse({"message": "SUCCESS"})
     else:
         return fastapi.responses.JSONResponse({"error": "UNAUTHORIZED_ERROR"}, status_code=starlette.status.HTTP_401_UNAUTHORIZED)
+
 
 def put_tasks_function(data : backend_pydantic_models.PutTasksForm, token_payload : dict, db_session : sqlalchemy.orm.session.Session):
     task = db_session.query(Tasks).filter(Tasks.id == data.task_id).first()
@@ -73,6 +78,7 @@ def put_tasks_function(data : backend_pydantic_models.PutTasksForm, token_payloa
     else:
         return fastapi.responses.JSONResponse({"error": "NOT_FOUND_ERROR"}, status_code=starlette.status.HTTP_404_NOT_FOUND)
 
+
 def delete_tasks_function(data : backend_pydantic_models.DeleteTasksForm, token_payload : dict, db_session : sqlalchemy.orm.session.Session):
     task = db_session.query(Tasks).filter(Tasks.id == data.task_id).first()
     if task is not None:
@@ -85,8 +91,6 @@ def delete_tasks_function(data : backend_pydantic_models.DeleteTasksForm, token_
     else:
         return fastapi.responses.JSONResponse({"error": "NOT_FOUND_ERROR"}, status_code=starlette.status.HTTP_404_NOT_FOUND)
 
-def get_user_id_function(token_payload : dict):
-    return token_payload["user_id"]
 
 def get_user_login_function(token_payload : dict, db_session : sqlalchemy.orm.session.Session):
     return db_session.query(Users.login).filter(Users.id == token_payload["user_id"]).scalar()
