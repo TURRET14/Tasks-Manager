@@ -42,16 +42,19 @@ Frontend - HTML, CSS, JS
 
 <h2>Главная страница</h2>
 
-![](https://github.com/TURRET14/Img-Storage/blob/main/Main.png)
+![](https://github.com/TURRET14/Img-Storage/blob/main/Task_All.png)
 
 <h2>Диалог добавления задачи</h2>
 
-![](https://github.com/TURRET14/Img-Storage/blob/main/Add.png)
+![](https://github.com/TURRET14/Img-Storage/blob/main/Task_Add.png)
 
 <h2>Диалог изменения задачи</h2>
 
-![](https://github.com/TURRET14/Img-Storage/blob/main/Change.png)
+![](https://github.com/TURRET14/Img-Storage/blob/main/Task_Change.png)
 
+<h2>Главная страница другого пользователя, на которого назначены задачи</h2>
+
+![](https://github.com/TURRET14/Img-Storage/blob/main/Task_AnotherUser.png)
 
 <h1>Краткая документация API.</h1>
 
