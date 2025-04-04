@@ -14,39 +14,39 @@
 <body>
     <dialog id="dialog_add_task">
         <form id="add_task_form">
-            <p class="name_text">Добавление задачи</p>
-            <p>Заголовок: <input id="task_header" name="task_header" type="text" maxlength="200"></p>
-            <p>Текст: <textarea id="text" name="task_text" type="text" rows="5" cols="40" maxlength="3000"></textarea></p>
-            <p>Статус:
+            <div class="name_text">Добавление задачи</div>
+            <div class="default_flex"><span>Заголовок:</span><input id="task_header" name="task_header" type="text" maxlength="200" class="flex_grow_element"></div>
+            <div class="default_flex"><span>Текст:</span><textarea id="text" name="task_text" type="text" maxlength="3000" class="flex_grow_element"></textarea></div>
+            <div class="default_flex"><span>Статус:</span>
                 <select id="status_id" name="task_status_id">
                     <option value="0">Новая</option>
                     <option value="1">В работе</option>
                     <option value="2">Завершена</option>
                 </select>
-            </p>
-            <p>Ответственный (Логин): <input id="assigned_user" name="task_assigned_user_login" type="text"></p>
-            <p><input id="dialog_add_task_button" type="submit" value="Добавить"><button id="close_button_add" type="button">Закрыть</button></p>
+            </div>
+            <div class="default_flex"><span>Ответственный (Логин):</span><input id="assigned_user" name="task_assigned_user_login" type="text" class="flex_grow_element"></div>
+            <div class="default_flex"><input id="dialog_add_task_button" type="submit" value="Добавить" class="flex_grow_element"><button id="close_button_add" type="button" class="flex_grow_element">Закрыть</button></div>
         </form>
     </dialog>
 
     <dialog id="dialog_change_task">
         <form id="change_task_form">
-            <p class="name_text">Изменение задачи</p>
-            <p>ID: <span id="change_id"></span></p>
-            <p>Заголовок: <input id="change_header" name="change_header" type="text" maxlength="200"></p>
-            <p>Текст: <textarea id="change_text" name="change_text" type="text" rows="5" cols="40" maxlength="3000"></textarea></p>
-            <p>Статус: 
+            <div class="name_text">Изменение задачи</div>
+            <div class="default_flex"><span>ID:</span><span id="change_id"></span></div>
+            <div class="default_flex"><span>Заголовок:</span><input id="change_header" name="change_header" type="text" maxlength="200" class="flex_grow_element"></div>
+            <div class="default_flex"><span>Текст:</span><textarea id="change_text" name="change_text" type="text" maxlength="3000" class="flex_grow_element"></textarea></div>
+            <div class="default_flex">Статус: 
                 <select id="change_status_id" name="change_status_id">
                     <option value="0">Новая</option>
                     <option value="1">В работе</option>
                     <option value="2">Завершена</option>
                 </select>
-            </p>
-            <p>Ответственный (Логин): <input id="change_assigned_user_login" name="change_assigned_user_login" type="text"></p>
-            <p>Дата создания: <span id="change_creation_date"></span></p>
-            <p><input id="change_dialog_add_task_button" type="submit" value="Изменить">
-                <button id="delete_task" type="button">Удалить</button><button id="close_button_change" type="button">Закрыть</button>
-            </p>
+            </div>
+            <div class="default_flex"><span>Ответственный (Логин):</span><input id="change_assigned_user_login" name="change_assigned_user_login" type="text" class="flex_grow_element"></div>
+            <div class="default_flex"><span>Дата создания:</span><span id="change_creation_date"></span></div>
+            <div class="default_flex"><input id="change_dialog_add_task_button" type="submit" value="Изменить" class="flex_grow_element">
+                <button id="delete_task" type="button" class="flex_grow_element">Удалить</button><button id="close_button_change" type="button">Закрыть</button>
+            </div>
         </form>
     </dialog>
 

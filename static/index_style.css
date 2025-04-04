@@ -102,7 +102,6 @@ input, button {
     background: #3d3d3d;
     cursor: pointer; 
     padding: 5px;
-    max-width: 300px;
 }
 
 
@@ -309,8 +308,10 @@ dialog::backdrop {
 }
 
 dialog textarea {
-    resize: none;
     font-size: 1rem;
+    resize: both;
+    min-width: calc(20 * 1em);
+    min-height: calc(5 * 1em);
 }
 
 
@@ -328,4 +329,28 @@ p {
 
 #close_button_change {
     float: right;
+}
+
+#add_task_form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.default_flex {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+}
+
+.flex_grow_element {
+    flex-grow: 1;
+    display: block;
+}
+
+#change_task_form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
 }
