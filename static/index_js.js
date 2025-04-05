@@ -10,6 +10,7 @@ async function getUserLogin() {
     }
     catch {
         alert("Ошибка соединения с сервером. Попробуйте позже.");
+        return;
     }
     if (response.ok) {
         var responseJson = await response.json();
@@ -300,6 +301,7 @@ async function getData() {
         }
         catch {
             alert("Ошибка соединения с сервером. Попробуйте позже.");
+            return;
         }
         if (tasksRequest.ok == true) {
             var jsonResponse = await tasksRequest.json();
@@ -357,6 +359,7 @@ document.getElementById("add_task_form").addEventListener("submit", async functi
     }
     catch {
         alert("Ошибка соединения с сервером. Попробуйте позже.");
+        return;
     }
     if (postResponse.ok == false) {
         if (postResponse.status == 401) {
@@ -403,6 +406,7 @@ document.getElementById("change_task_form").addEventListener("submit", async fun
     }
     catch {
         alert("Ошибка соединения с сервером. Попробуйте позже.");
+        return;
     }
     if (response.ok == false) {
         if (response.status == 401) {
@@ -445,6 +449,7 @@ document.getElementById("delete_task").addEventListener("click", async function 
         }
         catch {
             alert("Ошибка соединения с сервером. Попробуйте позже.");
+            return;
         }
         if (response.ok == false) {
             if (response.status == 401) {

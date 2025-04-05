@@ -13,6 +13,7 @@ async function postLogin(event) {
     }
     catch {
         alert("Ошибка соединения с сервером. Попробуйте позже.");
+        return;
     }
     if (response.ok == false) {
         if (response.status == 401) {
@@ -57,6 +58,7 @@ async function postRegister(event) {
     }
     catch {
         alert("Ошибка соединения с сервером. Попробуйте позже.");
+        return;
     }
     if (response.ok == false) {
         if (response.status == 409) {
