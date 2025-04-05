@@ -36,10 +36,7 @@ def get_tasks(token = fastapi.Depends(get_auth_bearer), db_session = fastapi.Dep
     except:
         return fastapi.responses.JSONResponse({"error": "UNAUTHORIZED_ERROR"}, status_code = starlette.status.HTTP_401_UNAUTHORIZED)
 
-    try:
-        return backend_functions.get_tasks_function(token_payload, db_session)
-    except:
-        return fastapi.responses.JSONResponse({"error": "INTERNAL_SERVER_ERROR"}, status_code=starlette.status.HTTP_500_INTERNAL_SERVER_ERROR)
+    return backend_functions.get_tasks_function(token_payload, db_session)
 
 
 # Отвечает за добавление новой задачи.

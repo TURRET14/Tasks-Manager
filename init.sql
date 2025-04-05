@@ -11,6 +11,11 @@ CREATE TABLE tasks (
     header VARCHAR(200),
     status_id SMALLINT,
     user_id BIGINT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-    assigned_user_id BIGINT REFERENCES users(id) ON DELETE SET NULL,
     creation_date TIMESTAMPTZ NOT NULL
+);
+
+CREATE TABLE task_assigned_users (
+    user_id BIGINT REFERENCES users(id) ON DELETE CASCADE,
+    task_id BIGINT REFERENCES tasks(id) ON DELETE CASCADE,
+    PRIMARY KEY(user_id, task_id)
 );

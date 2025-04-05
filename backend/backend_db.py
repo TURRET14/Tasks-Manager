@@ -20,8 +20,12 @@ class Tasks(Base):
     text = sqlalchemy.Column(sqlalchemy.VARCHAR(3000))
     status_id = sqlalchemy.Column(sqlalchemy.INTEGER)
     user_id = sqlalchemy.Column(sqlalchemy.BIGINT, sqlalchemy.ForeignKey("users.id"))
-    assigned_user_id = sqlalchemy.Column(sqlalchemy.BIGINT, sqlalchemy.ForeignKey("users.id"))
     creation_date = sqlalchemy.Column(sqlalchemy.DATETIME)
+
+class TaskAssignedUsers(Base):
+    __tablename__ = "task_assigned_users"
+    user_id = sqlalchemy.Column(sqlalchemy.BIGINT, primary_key=True)
+    task_id = sqlalchemy.Column(sqlalchemy.BIGINT, primary_key=True)
 
 SQLALCHEMY_DATABASE_URL =  "postgresql://" + os.getenv("POSTGRES_USER") + ":" + os.getenv("POSTGRES_PASSWORD") + "@" + os.getenv("POSTGRES_HOST") + ":5432/" + os.getenv("POSTGRES_DB")
 

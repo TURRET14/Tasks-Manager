@@ -14,14 +14,14 @@ class PostTasksForm(pydantic.BaseModel):
     task_header : str = pydantic.Field(max_length=200)
     task_text : str = pydantic.Field(max_length=3000)
     task_status_id : int = pydantic.Field(ge=0, le=2),
-    task_assigned_user_login: str = pydantic.Field()
+    task_assigned_users_logins: list[str] = pydantic.Field()
 
 class PutTasksForm(pydantic.BaseModel):
     task_id : int = pydantic.Field()
     task_header: str = pydantic.Field(max_length=200)
     task_text: str = pydantic.Field(max_length=3000)
     task_status_id: int = pydantic.Field(ge=0, le=2)
-    task_assigned_user_login : str = pydantic.Field()
+    task_assigned_users_logins : list[str] = pydantic.Field()
 
 class DeleteTasksForm(pydantic.BaseModel):
     task_id : int = pydantic.Field()
@@ -32,5 +32,5 @@ class TaskResponse(pydantic.BaseModel):
     text: str
     status_id: int
     creator_user_login: str
-    assigned_user_login : str | None
+    assigned_users_logins : list[str]
     creation_date: datetime

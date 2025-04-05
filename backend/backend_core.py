@@ -2,6 +2,7 @@ import fastapi
 import fastapi.middleware.cors
 import starlette.status
 from backend.backend_handles import router
+import uvicorn
 
 app = fastapi.FastAPI()
 

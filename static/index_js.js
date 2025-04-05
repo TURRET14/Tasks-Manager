@@ -23,14 +23,15 @@ async function getUserLogin() {
     }
 }
 
-
+var idSortAsc = true;
+var creatorSortAsc = true;
 var statusSortAsc = true;
 var dateSortAsc = true;
 var tasks = new Array();
 var allTasks = new Array();
 
-document.getElementById("dialog_add_task").addEventListener("close", (event) => document.getElementById("add_task_form").reset());
-document.getElementById("dialog_change_task").addEventListener("close", (event) => document.getElementById("change_task_form").reset());
+document.getElementById("dialog_add_task").addEventListener("close", (event) => {document.getElementById("add_task_form").reset(); document.getElementById("assigned_list").innerHTML = "";});
+document.getElementById("dialog_change_task").addEventListener("close", (event) => {document.getElementById("change_task_form").reset(); document.getElementById("change_assigned_list").innerHTML = "";});
 
 
 document.getElementById("close_button_add").addEventListener("click", (event) => document.getElementById("dialog_add_task").close());
@@ -70,7 +71,17 @@ async function filter(event) {
     if (statusId != 3) {
         tasks = tasks.filter((task) => task.status_id == statusId);
     }
-
+    if (document.getElementById("only_my_tasks_filter").checked == true) {
+        tasks = tasks.filter(function (task) {
+            if (task.creator_user_login == userLogin) {
+                return true;
+            }
+            else {
+                return false;
+            }
+        });
+    }
+    idSortAsc = true;
     statusSortAsc = true;
     dateSortAsc = true;
     sortByStatus()
@@ -91,6 +102,9 @@ document.getElementById("exit_button").addEventListener("click", signOut);
 
 
 async function sortByStatus(event) {
+    idSortAsc = true;
+    creatorSortAsc = true;
+    dateSortAsc = true;
     tasks.sort(function (task1, task2) {
         if (statusSortAsc == true) {
             return task1.status_id - task2.status_id;
@@ -111,6 +125,9 @@ async function sortByStatus(event) {
 document.getElementById("status_header").addEventListener("click", sortByStatus);
 
 async function sortByDate(event) {
+    idSortAsc = true;
+    creatorSortAsc = true;
+    statusSortAsc = true;
     tasks.sort(function (task1, task2) {
         if (dateSortAsc == true) {
             return new Date(task1.creation_date) - new Date(task2.creation_date);
@@ -130,13 +147,60 @@ async function sortByDate(event) {
 
 document.getElementById("date_header").addEventListener("click", sortByDate);
 
+async function sortByID(event) {
+    creatorSortAsc = true;
+    statusSortAsc = true;
+    dateSortAsc = true;
+    tasks.sort(function (task1, task2) {
+        if (idSortAsc == true) {
+            return task1.id - task2.id;
+        }
+        else {
+            return task2.id - task1.id;
+        }
+    });
+    if (idSortAsc == true) {
+        idSortAsc = false;
+    }
+    else {
+        idSortAsc = true;
+    }
+    putTasks();
+}
+
+document.getElementById("id_header").addEventListener("click", sortByID);
+
+
+async function sortByCreator(event) {
+    idSortAsc = true;
+    statusSortAsc = true;
+    dateSortAsc = true;
+    tasks.sort(function (task1, task2) {
+         return task1.creator_user_login.localeCompare(task2.creator_user_login)
+    });
+    if (creatorSortAsc == false) {
+        tasks.reverse();
+    }
+    if (creatorSortAsc == true) {
+        creatorSortAsc = false;
+    }
+    else {
+        creatorSortAsc = true;
+    }
+    putTasks();
+}
+
+
+document.getElementById("creator_header").addEventListener("click", sortByCreator);
+
+
 async function putTasks() {
     document.getElementById("tasks_table").innerHTML = "";
     for (task of tasks) {
         var row = document.createElement("tr");
         document.getElementById("tasks_table").appendChild(row);
         if (task.creator_user_login == userLogin) {
-            row.addEventListener("click", function (event) {
+            row.addEventListener("click", async function (event) {
                 document.getElementById("dialog_change_task").showModal();
                 document.getElementById("change_id").textContent = event.currentTarget.getElementsByClassName("task_id")[0].textContent;
                 document.getElementById("change_header").value = event.currentTarget.getElementsByClassName("task_header")[0].textContent;
@@ -157,8 +221,13 @@ async function putTasks() {
                         break;
                 }
                 document.getElementById("change_status_id").value = status_id;
-                document.getElementById("change_assigned_user_login").value = event.currentTarget.getElementsByClassName("task_assigned_user_login")[0].textContent;
                 document.getElementById("change_creation_date").textContent = event.currentTarget.getElementsByClassName("task_creation_date")[0].textContent;
+                var assignees = event.currentTarget.getElementsByClassName("assignee_login");
+                for (assignee of assignees) {
+                    var liElement = await addAssignee();
+                    liElement.getElementsByClassName("add_assignee")[0].value = assignee.textContent;
+                    document.getElementById("change_assigned_list").appendChild(liElement);
+                }
             });
         }
         var idCell = document.createElement("td");
@@ -182,18 +251,18 @@ async function putTasks() {
         }
         row.appendChild(creatorCell);
         var assigneeCell = document.createElement("td");
-        if (task.assigned_user_login == userLogin) {
-            var spanMain = document.createElement("span");
-            spanMain.textContent = task.assigned_user_login;
-            spanMain.className = "task_assigned_user_login";
-            var spanPostscript = document.createElement("span");
-            spanPostscript.textContent = " (Вы)";
-            assigneeCell.appendChild(spanMain);
-            assigneeCell.appendChild(spanPostscript);
-        }
-        else {
-            assigneeCell.className = "task_assigned_user_login";
-            assigneeCell.textContent = task.assigned_user_login;
+        for (assignee_login of task.assigned_users_logins) {
+            var assigneeParagraph = document.createElement("p");
+            var assigneeName = document.createElement("span");
+            assigneeName.textContent = assignee_login;
+            assigneeName.className = "assignee_login";
+            assigneeParagraph.appendChild(assigneeName);
+            if (assignee_login == userLogin) {
+                var assigneePostfix = document.createElement("span");
+                assigneePostfix.textContent = " (Вы)";
+                assigneeParagraph.appendChild(assigneePostfix);
+            }
+            assigneeCell.appendChild(assigneeParagraph);
         }
         row.appendChild(assigneeCell);
         var statusCell = document.createElement("td");
@@ -236,7 +305,8 @@ async function getData() {
             var jsonResponse = await tasksRequest.json();
             allTasks = jsonResponse;
             tasks = [...allTasks];
-            sortByStatus();
+            idSortAsc = true;
+            sortByID();
         }
         else {
             if (tasksRequest.status == 401) {
@@ -269,6 +339,12 @@ document.getElementById("add_task_form").addEventListener("submit", async functi
     for (entry of form) {
         formData[entry[0]] = entry[1];
     }
+    var assignees = document.getElementById("add_task_form").getElementsByClassName("add_assignee");
+    formData.task_assigned_users_logins = new Set();
+    for (assignee of assignees) {
+        formData.task_assigned_users_logins.add(assignee.value);
+    }
+    formData.task_assigned_users_logins = [...formData.task_assigned_users_logins];
     var formDataJson = JSON.stringify(formData);
     var auth_token = localStorage.getItem("auth_token");
     if (auth_token == null) {
@@ -308,7 +384,13 @@ document.getElementById("change_task_form").addEventListener("submit", async fun
     taskData.task_header = document.getElementById("change_header").value;
     taskData.task_text = document.getElementById("change_text").value;
     taskData.task_status_id = document.getElementById("change_status_id").value;
-    taskData.task_assigned_user_login = document.getElementById("change_assigned_user_login").value;
+
+    taskData.task_assigned_users_logins = new Set();
+    var assignees = document.getElementById("change_task_form").getElementsByClassName("add_assignee");
+    for (assignee of assignees) {
+        taskData.task_assigned_users_logins.add(assignee.value);
+    }
+    taskData.task_assigned_users_logins = [...taskData.task_assigned_users_logins];
     var auth_token = localStorage.getItem("auth_token");
     if (auth_token == null) {
         alert("Пожалуйста, авторизуйтесь.");
@@ -388,3 +470,36 @@ document.getElementById("delete_task").addEventListener("click", async function 
         }
     }
 });
+
+document.getElementById("add_assigned_list").addEventListener("click",  async (event) => {
+    if (document.getElementById("assigned_list").children.length < 10) {
+        var liElement = await addAssignee();
+        document.getElementById("assigned_list").appendChild(liElement);
+    }
+});
+document.getElementById("add_assigned_list_change").addEventListener("click",  async (event) => {
+    if (document.getElementById("assigned_list").children.length < 10) {
+        var liElement = await addAssignee();
+        document.getElementById("change_assigned_list").appendChild(liElement);
+    }
+});
+
+async function addAssignee() {
+    var liElement =  document.createElement("li");
+    var divElement = document.createElement("div");
+    divElement.className = "default_flex";
+    var inputElement = document.createElement("input");
+    inputElement.type = "text";
+    inputElement.classList.add("flex_grow_element");
+    inputElement.classList.add("add_assignee");
+    var buttonElement = document.createElement("button");
+    buttonElement.type = "button";
+    buttonElement.textContent = "Удалить";
+    buttonElement.addEventListener("click", async (event) => {
+        event.currentTarget.parentElement.parentElement.remove();
+    });
+    divElement.appendChild(inputElement);
+    divElement.appendChild(buttonElement);
+    liElement.appendChild(divElement);
+    return liElement;
+}

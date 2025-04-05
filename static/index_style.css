@@ -221,7 +221,7 @@ input[type="checkbox"]:checked + .custom-checkbox::after {
     display: block;
 }
 
-#checkbox_label {
+#checkbox_label, #only_my_tasks_label {
     display: flex;
     flex-direction: row;
     justify-content: center;
@@ -310,7 +310,7 @@ dialog::backdrop {
 dialog textarea {
     font-size: 1rem;
     resize: both;
-    min-width: calc(20 * 1em);
+    min-width: calc(35 * 1em);
     min-height: calc(5 * 1em);
 }
 
@@ -342,6 +342,7 @@ p {
     flex-direction: row;
     align-items: center;
     gap: 10px;
+    flex-wrap: wrap;
 }
 
 .flex_grow_element {
@@ -353,4 +354,31 @@ p {
     display: flex;
     flex-direction: column;
     gap: 10px;
+}
+
+.vertical_flex {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: stretch;
+    gap: 10px;
+}
+
+ol {
+    padding-left: 30px;
+    margin: 0px;
+}
+
+#creator_header, #id_header {
+    cursor: pointer;
+}
+
+#my_tasks_filter_div {
+    gap: 0px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+#filter_date {
+    max-width: 200px;
 }
