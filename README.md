@@ -14,15 +14,15 @@ Frontend - HTML, CSS, JS
 4. Создание задач.
 5. Изменение задач.
 6. Удаление задач.
-7. Сортировка задач по дате и по статусу.
-8. Фильтрация задач по дате и по статусу.
-9. Назначение ответственного за выполнение задачи (Можно назначить и себя). Задача отобразится у ответственного пользователя, но он не сможет ее редактировать.
+7. Сортировка задач по ID, создателю, дате и по статусу.
+8. Фильтрация задач по дате и по статусу, а также возможность отбора только своих собственных задач.
+9. Назначение ответственных за выполнение задачи (Можно назначить и себя). Задача отобразится у ответственных пользователей, но они не смогут ее редактировать.
 
-У каждой задачи может быть название, текст, статус, создатель и ответственный. Уникальный ID, дата создания и создатель заполняются автоматически на сервере. Для указания ответственного нужно указать валидный логин пользователя. В случае указания невалидного логина ответственного (Или не указания его вообще), в столбец ответственного будет записано значение NULL.
+У каждой задачи может быть название, текст, статус, создатель и ответственные. Уникальный ID, дата создания и создатель заполняются автоматически на сервере. Для указания ответственных нужно указать валидные логины пользователей. Ответственных за задачу может и не быть. Лимит - 10 ответственных на задачу.
 
-Для сортировки задач по дате или по статусу нужно нажать на соответствующий заголовок таблицы.
+Для сортировки задач по ID, создателю, дате или по статусу нужно нажать на соответствующий заголовок таблицы.
 
-В меню фильтрации можно сортировать как по одному параметру, так и по обоим. Для применения фильтрации нужно нажать на кнопку фильтровать.
+В меню фильтрации можно сортировать как по одному параметру, так и по обоим. Так же можно выбрать опцию отображения только своих задач (Где текущий пользователь - создатель). Для применения фильтрации нужно нажать на кнопку фильтровать.
 
 Получить доступ или изменить чужие задачи невозможно. Единственное исключение - вы можете просматрировать задачи, где вы отмечены как ответственный.
 
@@ -42,19 +42,19 @@ Frontend - HTML, CSS, JS
 
 <h2>Главная страница</h2>
 
-![](https://github.com/TURRET14/Img-Storage/blob/main/Task_All.png)
+![](https://github.com/TURRET14/Img-Storage/blob/main/Mgr_All.png)
 
 <h2>Диалог добавления задачи</h2>
 
-![](https://github.com/TURRET14/Img-Storage/blob/main/Task_Add.png)
+![](https://github.com/TURRET14/Img-Storage/blob/main/Mgr_Add.png)
 
 <h2>Диалог изменения задачи</h2>
 
-![](https://github.com/TURRET14/Img-Storage/blob/main/Task_Change.png)
+![](https://github.com/TURRET14/Img-Storage/blob/main/Mgr_Change.png)
 
 <h2>Главная страница другого пользователя, на которого назначены задачи</h2>
 
-![](https://github.com/TURRET14/Img-Storage/blob/main/Task_AnotherUser.png)
+![](https://github.com/TURRET14/Img-Storage/blob/main/Mgr_Another.png)
 
 <h1>Краткая документация API.</h1>
 
@@ -93,6 +93,7 @@ POSTGRES_DB=<Название базы данных>
 POSTGRES_HOST=<Имя хоста базы данных>
 
 <h3>Пример заполненного .env файла, пригодного для использования в docker-compose</h3>
+
 SECRET_KEY="VerySecretKey"
 
 ALGORITHM="HS256"
@@ -170,6 +171,7 @@ db = fastapi.Depends(get_db)
 Зависимости:
 
 token = fastapi.Depends(get_auth_bearer) - Получение JWT Токена из заголовка запроса в формате Authorization: Bearer <JWT>
+
 db = fastapi.Depends(get_db) - Получение сессии БД
 
 <h3>4. @router.post("/tasks")</h3>
@@ -182,7 +184,7 @@ db = fastapi.Depends(get_db) - Получение сессии БД
         task_header : str = pydantic.Field(max_length=200)
         task_text : str = pydantic.Field(max_length=3000)
         task_status_id : int = pydantic.Field(ge=0, le=2),
-        task_assigned_user_login: str = pydantic.Field()
+        task_assigned_users_logins: list[str] = pydantic.Field()
 
 Формат тела запроса (JSON):
 
@@ -190,7 +192,7 @@ db = fastapi.Depends(get_db) - Получение сессии БД
 "task_header": <Текст заголовка задачи>,
 "task_text": <Текст задачи>,
 "task_status_id": <ID статуса задачи>,
-"task_assigned_user_login": <Логин ответственного>
+"task_assigned_users_logins": <Логины ответственных>
 }
 
 Зависимости:
@@ -210,7 +212,7 @@ db = fastapi.Depends(get_db)) - Получение сессии БД
         task_header: str = pydantic.Field(max_length=200)
         task_text: str = pydantic.Field(max_length=3000)
         task_status_id: int = pydantic.Field(ge=0, le=2)
-        task_assigned_user_login : str = pydantic.Field()
+        task_assigned_users_logins : list[str] = pydantic.Field()
 
 Формат тела запроса (JSON):
 
@@ -219,7 +221,7 @@ db = fastapi.Depends(get_db)) - Получение сессии БД
 "task_header": <Текст заголовка задачи>,
 "task_text": <Текст задачи>,
 "task_status_id": <ID статуса задачи>,
-"task_assigned_user_login": <Логин ответственного>
+"task_assigned_users_logins": <Логины ответственных>
 }
 
 Зависимости:
@@ -300,7 +302,7 @@ email-validator
 
 Ссылка на образ сервиса Фронтенда в Docker Hub: https://hub.docker.com/repository/docker/turret14/task_manager_frontend/general
 
-Ссылка на образ сервиса Бэкэнда в Docker Hub: https://hub.docker.com/repository/docker/turret14/task_manager_backend/general
+Ссылка на образ сервиса Бэкенда в Docker Hub: https://hub.docker.com/repository/docker/turret14/task_manager_backend/general
 
 
 Unit-тесты находятся в файле unit_testing.py. При выполнении все тесты завершились успешно.
