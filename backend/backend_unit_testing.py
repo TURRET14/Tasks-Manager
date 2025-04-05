@@ -34,11 +34,11 @@ app.dependency_overrides[get_db] = override_get_db
 client = TestClient(app)
 
 def test_create_task_without_jwt():
-    response = client.post("/tasks", json={"task_header": "TestTask", "task_text": "TestText", "task_status_id": "0", "task_assigned_user_login": ""})
+    response = client.post("/tasks", json={"task_header": "TestTask", "task_text": "TestText", "task_status_id": "0", "task_assigned_users_logins": []})
     assert response.status_code == 401
 
 def test_create_task_with_invalid_jwt():
-    response = client.post("/tasks", json={"task_header": "TestTask", "task_text": "TestText", "task_status_id": "0", "task_assigned_user_login": ""}, headers={"Authorization": "Bearer INVALIDJWT"})
+    response = client.post("/tasks", json={"task_header": "TestTask", "task_text": "TestText", "task_status_id": "0", "task_assigned_users_logins": []}, headers={"Authorization": "Bearer INVALIDJWT"})
     assert response.status_code == 401
 
 def test_authorization_invalid_password(test_db):

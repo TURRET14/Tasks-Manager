@@ -66,10 +66,10 @@ def post_tasks_function(data : backend_pydantic_models.PostTasksForm, token_payl
         db_session.add(task)
         db_session.commit()
         db_session.refresh(task)
+        data.task_assigned_users_logins = data.task_assigned_users_logins[:10]
         data.task_assigned_users_logins = list(set(data.task_assigned_users_logins))
         assigned_user_ids = db_session.query(Users.id).filter(Users.login.in_(data.task_assigned_users_logins)).all()
         assigned_user_ids = [entry[0] for entry in assigned_user_ids]
-        assigned_user_ids = assigned_user_ids[:10]
         for assigned_id in assigned_user_ids:
                 assigned_user_entry = TaskAssignedUsers(task_id=task.id, user_id=assigned_id)
                 db_session.add(assigned_user_entry)
@@ -90,10 +90,10 @@ def put_tasks_function(data : backend_pydantic_models.PutTasksForm, token_payloa
             task.status_id = data.task_status_id
             db_session.commit()
             db_session.refresh(task)
+            data.task_assigned_users_logins = data.task_assigned_users_logins[:10]
             data.task_assigned_users_logins = list(set(data.task_assigned_users_logins))
             assigned_user_ids = db_session.query(Users.id).filter(Users.login.in_(data.task_assigned_users_logins)).all()
             assigned_user_ids = [entry[0] for entry in assigned_user_ids]
-            assigned_user_ids = assigned_user_ids[:10]
             db_session.query(TaskAssignedUsers).filter(sqlalchemy.and_(TaskAssignedUsers.task_id == task.id, TaskAssignedUsers.user_id.notin_(assigned_user_ids))).delete()
             db_session.commit()
             for assigned_id in assigned_user_ids:
