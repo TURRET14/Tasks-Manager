@@ -12,7 +12,7 @@ router = fastapi.APIRouter()
 
 # Отвечает за логин пользователей в систему.
 @router.post("/login", response_class=fastapi.responses.JSONResponse, description="Отвечает за логин пользователей в систему.")
-def post_login(data : backend_pydantic_models.LoginForm, db_session = fastapi.Depends(get_db)):
+async def post_login(data : backend_pydantic_models.LoginForm, db_session = fastapi.Depends(get_db)):
     try:
         return backend_functions.post_login_function(data, db_session)
     except:
@@ -21,7 +21,7 @@ def post_login(data : backend_pydantic_models.LoginForm, db_session = fastapi.De
 
 # Отвечает за регистрацию пользователей.
 @router.post("/register", response_class=fastapi.responses.JSONResponse, description="Отвечает за регистрацию пользователей.")
-def register(data : backend_pydantic_models.RegisterForm, db_session = fastapi.Depends(get_db)):
+async def register(data : backend_pydantic_models.RegisterForm, db_session = fastapi.Depends(get_db)):
     try:
         return backend_functions.post_register_function(data, db_session)
     except:
@@ -30,7 +30,7 @@ def register(data : backend_pydantic_models.RegisterForm, db_session = fastapi.D
 
 # Отвечает за получение задач.
 @router.get("/tasks", response_model=list[backend_pydantic_models.TaskResponse], response_class=fastapi.responses.JSONResponse, description="Отвечает за получение задач.")
-def get_tasks(token = fastapi.Depends(get_auth_bearer), db_session = fastapi.Depends(get_db)):
+async def get_tasks(token = fastapi.Depends(get_auth_bearer), db_session = fastapi.Depends(get_db)):
     try:
         token_payload = decode_jwt(token)
     except:
@@ -41,7 +41,7 @@ def get_tasks(token = fastapi.Depends(get_auth_bearer), db_session = fastapi.Dep
 
 # Отвечает за добавление новой задачи.
 @router.post("/tasks", response_class=fastapi.responses.JSONResponse, description="Отвечает за добавление новой задачи.")
-def post_tasks(data : backend_pydantic_models.PostTasksForm, token = fastapi.Depends(get_auth_bearer), db_session = fastapi.Depends(get_db)):
+async def post_tasks(data : backend_pydantic_models.PostTasksForm, token = fastapi.Depends(get_auth_bearer), db_session = fastapi.Depends(get_db)):
     try:
         token_payload = decode_jwt(token)
     except:
@@ -56,7 +56,7 @@ def post_tasks(data : backend_pydantic_models.PostTasksForm, token = fastapi.Dep
 
 # Отвечает за изменение существующей задачи.
 @router.put("/tasks", response_class=fastapi.responses.JSONResponse, description="Отвечает за изменение существующей задачи.")
-def put_tasks(data : backend_pydantic_models.PutTasksForm, token = fastapi.Depends(get_auth_bearer), db_session = fastapi.Depends(get_db)):
+async def put_tasks(data : backend_pydantic_models.PutTasksForm, token = fastapi.Depends(get_auth_bearer), db_session = fastapi.Depends(get_db)):
     try:
         token_payload = decode_jwt(token)
     except:
@@ -70,7 +70,7 @@ def put_tasks(data : backend_pydantic_models.PutTasksForm, token = fastapi.Depen
 
 # Отвечает за удаление существующей задачи.
 @router.delete("/tasks", response_class=fastapi.responses.JSONResponse, description="Отвечает за удаление существующей задачи.")
-def delete_tasks(data : backend_pydantic_models.DeleteTasksForm, token = fastapi.Depends(get_auth_bearer), db_session = fastapi.Depends(get_db)):
+async def delete_tasks(data : backend_pydantic_models.DeleteTasksForm, token = fastapi.Depends(get_auth_bearer), db_session = fastapi.Depends(get_db)):
     try:
         token_payload = decode_jwt(token)
     except:
@@ -84,7 +84,7 @@ def delete_tasks(data : backend_pydantic_models.DeleteTasksForm, token = fastapi
 
 # Возвращает логин текущего пользователя.
 @router.get("/get_current_user_login", response_class=fastapi.responses.JSONResponse, description="Возвращает логин текущего пользователя.")
-def get_id(token = fastapi.Depends(get_auth_bearer), db_session = fastapi.Depends(get_db)):
+async def get_id(token = fastapi.Depends(get_auth_bearer), db_session = fastapi.Depends(get_db)):
     try:
         token_payload = decode_jwt(token)
     except:
